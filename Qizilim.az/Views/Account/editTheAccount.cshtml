@@ -1,0 +1,298 @@
+﻿@model AccountEditCommand
+
+@{ Layout = "_LayoutStore"; }
+
+
+@section css{ 
+    <style>
+        
+        .ck-content {
+            min-height: 250px;
+        }
+
+        .photo-viewer {
+            width: 200px;
+            height: 100px;
+            background-position: center;
+            background-size: cover;
+            object-fit: cover;
+            background-image: url('/photouploads/images/file-upload.jpg');
+            cursor: pointer;
+        }
+
+        #file {
+            display: none;
+        }
+    
+    </style>
+}
+
+@if (User.IsInRole("Shop"))
+{
+
+    @section popup{
+        <div class="premium-popup" style="display: none;">
+            <div class="be-premium-menu" style="position: relative;">
+                <div class="close-popup" style="position: absolute; right: 10px; top: 10px;">
+                    <img src="https://www.svgrepo.com/show/178323/cross-close.svg" width="15px" height="15px" alt="">
+                </div>
+                <h3>Balansınızı artırın</h3>
+
+
+                <div class="day-counter">
+                    <p>Balansa əlavə olunacaq miqdar</p>
+                    <input type="number" id="day-select-option"  value="10" min="1"> <span>Azn</span>
+                </div>
+
+                <div class="buttont-premium">
+                    <button type="button" class="accept-btn" id="acceptCount">
+                        <span class="accept-btn-text">Təsdiqlə</span>
+                    </button>
+                </div>
+
+
+            </div>
+
+        </div>
+     }
+<div class="edit-content-main">
+    <div class="edit-header">
+        <h3>Hesab idaresi </h3>
+    </div>
+    <div class="wallet-div">
+        <div class="wallet-balance">
+            Balans: <span>@ViewBag.User.Wallet</span><span> AZN</span>
+        </div>
+        <div class="wallet-button">
+            <button type="button" class="wallet-button" id="balansartir">
+                <span class="wallet-button-icon">
+                    <!-- <i class="fa-duotone fa-credit-card"></i>
+                    <i class="fa-duotone fa-credit-card"></i> -->
+
+                    <img src="../../Main/images/asist-imgs/icons8-credit-card-60.png" alt="" srcset="">
+                </span>
+                <span class="wallet-button-text">
+                    <span>Balansi artır</span>
+                </span>
+            </button>
+
+        </div>
+    </div>
+    <div class="edit-content">
+
+        <div class="left-edit">
+            <div class="edit-inputs">
+                <form method="post" asp-controller="account" asp-action="editTheAccount" asp-route-id="@Model.Id" enctype="multipart/form-data">
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+
+                    <label for="file1" class="control-label">Şəkil</label>
+                    <div class="form-group">
+                        @if (Model.ProfileImg != null)
+                        {
+                <label class="photo-viewer control-label" id="file-viewer" for="file" style="background-image: url(/photouploads/images/@Model.ProfileImg);"></label> }
+            else
+            {
+                <label class="photo-viewer control-label" id="file-viewer" for="file"></label>}
+                        <input name="file" id="file" type="file" class="form-control" onchange="readFile(this)" />
+                        <input type="hidden" asp-for="ProfileImg" />
+                        <span asp-validation-for="ProfileImg" class="text-danger"></span>
+                    </div>
+
+
+                    <div class="input-field">
+                        <label asp-for="shopName" for="storeName">Mağaza adı : </label>
+                        <input asp-for="shopName" class="input-are" style="border: 1px solid #C1957C; border-radius: 10px;" name="storeName" type="text">
+                        <span asp-validation-for="shopName" class="text-danger"></span>
+                    </div>
+
+                    <div class="input-field">
+                        <label asp-for="shopNumber" for="storeNumber">Mağazanın Nömrəsi : </label>
+                        <input asp-for="shopNumber" class="input-are" style="border: 1px solid #C1957C; border-radius: 10px;" name="storeNumber" type="text">
+                        <span asp-validation-for="shopNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="form-group" style="display:flex; flex-direction:column;">
+                        <label name="FennName" class="control-label">Mağazanın yeri</label>
+                        <select class="control-label qrup" name="shopLocation" asp-for="shopLocation">
+                            <option disabled>Mağazanın yeri</option>
+
+                            @foreach (var item in ViewBag.Centers)
+                            {
+                                <option>@item.Name</option>
+                            }
+
+                        </select>
+                    </div>
+
+                    <div class="input-field">
+                        <label asp-for="Email" for="storeEmail">Email : </label>
+                        <input asp-for="Email" class="input-are" disabled style="border: 1px solid #C1957C; border-radius: 10px;" name="storeEmail" type="text">
+                        <span asp-validation-for="Email" class="text-danger"></span>
+                    </div>
+
+                    <div class="input-field">
+                        <label asp-for="whatsappNumber" for="storeWhatsapp">Whatsapp : </label>
+                        <input asp-for="whatsappNumber" class="input-are" style="border: 1px solid #C1957C; border-radius: 10px;" name="storeWhatsapp" id="whatsappNumber" placeholder="məs : (+994 55) 444 33 22" type="text">
+                        <span asp-validation-for="whatsappNumber" class="text-danger"></span>
+                    </div>
+
+                    <div class="input-field">
+                        <label asp-for="instagramLink" for="storeInstagram">Instagram : </label>
+                        <input asp-for="instagramLink" class="input-are" style="border: 1px solid #C1957C; border-radius: 10px;" name="storeInstagram" id="instagramLink" placeholder="Link... " type="text">
+                        <span asp-validation-for="instagramLink" class="text-danger"></span>
+                    </div>
+
+                    <div class="input-field">
+                        <label asp-for="tiktokLink" for="storeTiktok">Tiktok : </label>
+                        <input asp-for="tiktokLink" class="input-are" style="border: 1px solid #C1957C; border-radius: 10px;" name="storeTiktok" id="tiktokLink" placeholder="Link..." type="text">
+                        <span asp-validation-for="tiktokLink" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="aboutShop" class="control-label">Mağaza haqqında: </label><br>
+                        <textarea asp-for="aboutShop" class="form-control editor"></textarea>
+                        <span asp-validation-for="aboutShop" class="text-danger"></span>
+                    </div>
+
+                    <div class="input-field">
+                        <div class="input-are">
+                           @if (Model.catdirilma == false)
+                           {
+                                <label asp-for="catdirilma" id="varyazisi" for="yes">Çatdırılma yoxdur</label>
+                                <input asp-for="catdirilma" type="checkbox" name="sample" id="yes" class="catdirilmaCheckbox store-delivery-rad">
+
+                           }
+                           else if (Model.catdirilma == true)
+                           {
+                                <label asp-for="catdirilma" id="varyazisi" for="yes">Çatdırılma vardır</label>
+                                <input asp-for="catdirilma" type="checkbox" name="sample" checked id="yes" class="catdirilmaCheckbox store-delivery-rad">
+
+                           }
+                           else if (Model.catdirilma == null)
+                           {
+                                <label asp-for="catdirilma" id="varyazisi" for="yes">Çatdırılma seçilməyib</label>
+                                <input asp-for="catdirilma" type="checkbox" name="sample" id="yes" class="catdirilmaCheckbox store-delivery-rad">
+
+                           }
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <input type="hidden" asp-for="Id" />
+                        <input type="submit" value="Save" class="btn btn-primary" />
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div> }
+            else if(User.IsInRole("User"))
+            {
+<div class="edit-content-main">
+
+    <div class="edit-content">
+        <div class="edit-header">
+            <h3>Hesab idaresi </h3>
+        </div>
+        <div class="left-edit">
+            <div class="edit-inputs">
+                <form action="">
+                    <div class="input-field">
+                        <label for="storeName">Magaza adi : </label>
+                        <input name="storeName" disabled value="@ViewBag.User.UserName" type="text">
+                    </div>
+
+                    <div class="input-field">
+                        <label for="storeNumber">Nomre : </label>
+                        <input name="storeNumber" disabled value="@ViewBag.User.PhoneNumber" type="text">
+                    </div>
+
+                    <div class="input-field">
+                        <label for="storeEmail">Email : </label>
+                        <input class="storeEmail" value="@ViewBag.User.Email" disabled type="text">
+                    </div>
+                    <div class="right-edit">
+                        <div class="edit-image">
+                            <img class="user-image-edit" src="../../Main/images/asist-imgs/pngwing.com (18).png" alt="">
+                        </div>
+                        <button class="change-profile-photo" onclick="importData()">
+                            <span class="css-button-icon">
+                                <i class="fa fa-upload"></i>
+                            </span>
+
+                            <span class="css-button-text">
+                                <span>Profil şəklini dəyiş</span>
+                            </span>
+                        </button>
+                        <button type="button" class="css-button-verfiy">
+
+                            <span class="css-button-icon">
+                                <i class="fa fa-check"></i>
+                            </span>
+
+                            <span class="css-button-text">
+                                <span>Yaddaşda saxla</span>
+                            </span>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+        </div>
+        
+    </div>
+
+
+
+
+</div>}
+
+
+
+
+
+
+@section js {
+    <script>
+
+        var checkedCatdirilma = document.querySelector('#yes')
+
+        checkedCatdirilma.addEventListener("change", function () {
+
+            if (checkedCatdirilma.checked) {
+                document.querySelector('#varyazisi').innerHTML = "Çatdırılma vardır"
+            }
+            else {
+                document.querySelector('#varyazisi').innerHTML = "Çatdırılma yoxdur"
+            }
+
+        })
+
+
+
+
+        var acceptCount = document.querySelector('#acceptCount');
+
+        acceptCount.addEventListener("click", function (e) {
+
+            var countWallet = document.querySelector('#day-select-option').value
+
+             $.ajax({
+                type: "POST",
+                url: "@Url.Action("addWallet","account")",
+                data: {
+                    countWallet: countWallet
+                },
+                 success: function (data) {
+                     if (data.status == 200) {
+                         location.reload(true)
+                     }
+                },
+                error: function (xhr, status, error) {
+                    // Handle error response
+                }
+            });
+
+        })
+
+    </script>
+}
