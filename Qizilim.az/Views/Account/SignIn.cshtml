@@ -11,23 +11,25 @@
         <form method="post" asp-controller="account" asp-action="signin">
             <div class="txt_field">
                 <input asp-for="Username" class="txt-field-input" id="emailText" type="text" required>
-                <span></span>
-                <label class="txt-field-label">Email ünvanı</label>
+                <label class="txt-field-label" asp-for="Username">Email ünvanı</label>
+                <span asp-validation-for="Username" style="color: red; font-size: 10px; border: none; margin-bottom: 10px;" class="text-danger" ></span>
             </div>
-            <div class="txt_field">
+            <div class="txt_field" style="margin-bottom: 5px;">
                 <input asp-for="Password" class="txt-field-input" type="password" required>
-                <span></span>
-                <label class="txt-field-label">Şifrə</label>
+                <label class="txt-field-label" asp-for="Password" >Şifrə</label>
+                <span asp-validation-for="Password" style="color: red; font-size: 10px; border: none; margin-bottom: 10px;" class="text-danger"></span>
+
             </div>
+
             <div class="pass">
-                <a id="forgot_password">
+                <a id="forgot_password" href="#">
                     Şifrəni unutdum
                 </a>
             </div>
             <input type="submit" id="submit" value="Daxil ol" style="display: none;">
             <input type="submit" value="Daxil ol">
             <div class="signup_link">
-                Hesabin yoxdur? <a class="register-btn">Qeydiyyatdan kec</a>
+                Hesabin yoxdur? <a class="register-btn" asp-controller="Register" asp-action="Register">Qeydiyyatdan kec</a>
             </div>
         </form>
     </div>
@@ -46,13 +48,13 @@
             </div>
         </form>
     </div>
-    <div class="center">
+    @*<div class="center">
         <h1>Qeydiyyat</h1>
         <form method="post">
             <div class="txt_field">
                 <input class="txt-field-input" type="text" id="ad" required>
-                <span></span>
                 <label class="txt-field-label">Ad</label>
+
             </div>
             <div class="txt_field">
                 <input class="txt-field-input" type="text" id="soyad" required>
@@ -66,14 +68,14 @@
             </div>
             <label class="busy-user" style="display: none;">Bu istifadeci adi basqa istifaci terefinden istifaed olunur</label>
             <div class="txt_field">
-                <input class="txt-field-input epoct" id="email" type="email" required>
-                <span></span>
-                <label class="txt-field-label" id="email_txt">E-mail</label>
+                <input class="txt-field-input epoct" id="email" type="email" asp-for="User.Email" required>
+                <span asp-validation-for="User.Email" style="color: red; font-size: 10px; border: none; margin-bottom: 10px;" class="text-danger" ></span>
+                <label class="txt-field-label" id="email_txt" asp-for="User.Email">E-mail</label>
             </div>
             <div class="txt_field">
-                <input class="txt-field-input" type="tel" id="phoneNumber" required>
-                <span></span>
-                <label class="txt-field-label">Telefon nömrəsi</label>
+                <input class="txt-field-input" type="tel" id="phoneNumber" maxlength="9" asp-for="User.PhoneNumber" required>
+                <span asp-validation-for="User.PhoneNumber" style="color: red; font-size: 10px; border: none; margin-bottom: 10px;" class="text-danger" ></span>
+                <label class="txt-field-label" asp-for="User.PhoneNumber">Telefon nömrəsi</label>
             </div>
             <div class="txt_field">
                 <input class="txt-field-input" type="password" id="password" required>
@@ -137,7 +139,7 @@
                 Hesabin var? <a href="#" class="signin-btn">Daxil ol</a>
             </div>
         </form>
-    </div>
+    </div>*@
 </div>
 
 
@@ -229,6 +231,7 @@
                     success: function (data) {
                         if (data.status == 200) {
                             location.reload(true)
+                            location.pathname = "register/verifyEmail"
                         }
                     }
 

@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Cabin&display=swap");
+@import url('file:///C:\Users\HP\Desktop\Qizilim_Son\Qizilim.az\wwwroot\Main\global.css');
 :root {
   --heart: #f43965;
 }
@@ -3621,21 +3622,21 @@ div.social {
 }
 form .txt_field{
   position: relative;
-  border-bottom: 2px solid #adadad;
   margin: 30px 0;
 }
-.txt-field-input{
-  width: 100%;
-  padding: 0 5px;
-  height: 40px;
-  font-size: 16px;
-  border: none;
-  background: none;
-  outline: none;
+.txt-field-input {
+    width: 100%;
+    padding: 0 5px;
+    height: 40px;
+    font-size: 16px;
+    border: none;
+    background: none;
+    outline: none;
+    border-bottom: 2px solid #adadad !important;
 }
 .txt-field-label{
   position: absolute;
-  top: 50%;
+  top: 20px;
   left: 5px;
   color: #adadad;
   -webkit-transform: translateY(-50%);
@@ -3654,7 +3655,7 @@ form .txt_field{
   left: 0;
   width: 0%;
   height: 2px;
-  background: #c1957c;
+  /*background: #c1957c;*/
   -webkit-transition: .5s;
   -o-transition: .5s;
   transition: .5s;
@@ -3743,7 +3744,7 @@ input[type="submit"]:hover{
   display: block;
 } */
 .txt-field-shop-div{
-  display: none;
+  /*display: none;*/
 }
 
 
@@ -3950,7 +3951,7 @@ details[open] summary:after {
 
 .type input[type=radio]:after {
   vertical-align: top;
-	content:attr(title-type);
+	content:attr(category-name);
 	display: inline;
   color: #4c4c4c;
 
@@ -3971,7 +3972,7 @@ details[open] summary:after {
 }
 .loc input[type=radio]:after {
   vertical-align: top;
-	content:attr(title-loc);
+	content:attr(center-name);
 	display: inline;
 	font-size: 1rem;
   color: #4c4c4c;
@@ -4694,8 +4695,6 @@ gap: 15px;
 .back-main-page{
   cursor: pointer;
   border: 0;
-  width: 100x;
-  margin: 10px auto 0 auto;
 
 }
 .back-main-page button {
@@ -4706,7 +4705,6 @@ gap: 15px;
   border: 0;
   padding:8px;
   border-radius: 10px;
-  float: right;
 }
 .editUser{
   text-decoration: none;

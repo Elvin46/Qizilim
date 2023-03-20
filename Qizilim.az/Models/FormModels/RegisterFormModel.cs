@@ -12,27 +12,22 @@ namespace Qizilim.az.Models.FormModels
         [Required]
         public string Name { get; set; }
         [Required]
-        public string Username { get; set; }
-
-        [Required]
         public string Surname { get; set; }
-
-        public string? ProfileImg { get; set; }
-        public IFormFile? file { get; set; }
-
+        [Required]
+        public string Username { get; set; }
         [Required]
         [EmailAddress]
         public string Email { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        public string Password { get; set; }
-
-        [Required]
-        [DataType(DataType.Password)]
-        [Compare("Password")]
-        public string ConfrimPassword { get; set; }
-
         public string PhoneNumber { get; set; }
+        [Required, DataType(DataType.Password)]
+        public string Password { get; set; }
+        [Required, DataType(DataType.Password), Compare(nameof(Password))]
+        public string ConfrimPassword { get; set; }
+        public int CenterId { get; set; }
+        public string? ShopName { get; set; }
+        public string? ShopNumber { get; set; }
+        public bool isShop { get; set; }
+
+
     }
 }

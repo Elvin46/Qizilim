@@ -1,4 +1,5 @@
 ﻿function removeEntity(ev, entityId, name) {
+    console.log("Salma")
     swal({
         title: "Əminsiniz?",
         text: `${name} adlı qeyd silinəcək.`,

@@ -19,7 +19,7 @@ namespace Qizilim.az.AppCode.Modules.AccountModule
 
         [DataType(DataType.Password)]
         public string Password { get; set; }
-
+        public QizilimUser User { get; set; }
 
         public class SigninCommandHandler : IRequestHandler<SigninCommand, QizilimUser>
         {

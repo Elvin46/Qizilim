@@ -20,37 +20,36 @@ email.addEventListener("focusout", () => {
     document.getElementById("email_txt").style.top = "50%";
   }
 });
-
-signinBtn.addEventListener("click", (e) => {
-  e.preventDefault();
-  document
-    .querySelector(".login_register_forgot")
-    .querySelector(".center").style.display = "block";
-  document
-    .querySelector(".login_register_forgot")
-    .querySelector(".center").nextElementSibling.style.display = "none";
-  document
-    .querySelector(".login_register_forgot")
-    .querySelector(
-      ".center"
-    ).nextElementSibling.nextElementSibling.style.display = "none";
-});
-registersBtn.forEach((registerBtn) => {
-  registerBtn.addEventListener("click", (e) => {
-    e.preventDefault();
-    document
-      .querySelector(".login_register_forgot")
-      .querySelector(".center").style.display = "none";
-    document
-      .querySelector(".login_register_forgot")
-      .querySelector(".center").nextElementSibling.style.display = "none";
-    document
-      .querySelector(".login_register_forgot")
-      .querySelector(
-        ".center"
-      ).nextElementSibling.nextElementSibling.style.display = "block";
-  });
-});
+//signinBtn.addEventListener("click", (e) => {
+//  e.preventDefault();
+//  document
+//    .querySelector(".login_register_forgot")
+//    .querySelector(".center").style.display = "block";
+//  document
+//    .querySelector(".login_register_forgot")
+//    .querySelector(".center").nextElementSibling.style.display = "none";
+//  document
+//    .querySelector(".login_register_forgot")
+//    .querySelector(
+//      ".center"
+//    ).nextElementSibling.nextElementSibling.style.display = "none";
+//});
+//registersBtn.forEach((registerBtn) => {
+//  registerBtn.addEventListener("click", (e) => {
+//    e.preventDefault();
+//    document
+//      .querySelector(".login_register_forgot")
+//      .querySelector(".center").style.display = "none";
+//    document
+//      .querySelector(".login_register_forgot")
+//      .querySelector(".center").nextElementSibling.style.display = "none";
+//    document
+//      .querySelector(".login_register_forgot")
+//      .querySelector(
+//        ".center"
+//      ).nextElementSibling.nextElementSibling.style.display = "block";
+//  });
+//});
 forgotPasswordBtn.addEventListener("click", (e) => {
   e.preventDefault();
   document
@@ -60,15 +59,3 @@ forgotPasswordBtn.addEventListener("click", (e) => {
     .querySelector(".login_register_forgot")
     .querySelector(".center").nextElementSibling.style.display = "block";
 });
-function shopInfoDetails() {
-  // Get the checkbox
-  var checkBox = document.getElementById("shopCheckbox");
-  // Get the output text
-
-  // If the checkbox is checked, display the output text
-  if (checkBox.checked == true) {
-    document.getElementById("shopInfoRegister").style.display = "block";
-  } else {
-    document.getElementById("shopInfoRegister").style.display = "none";
-  }
-}

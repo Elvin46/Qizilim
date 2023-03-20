@@ -43,7 +43,48 @@ namespace Qizilim.az.Areas.Admin.Controllers
 
             return RedirectToAction(nameof(Index));
         }
+        public async Task<IActionResult> Premium(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
 
+            var shop = await db.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+
+            shop.isPremium = true;
+            await db.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> Silver(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var shop = await db.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+
+            shop.isPremium = false;
+            await db.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
+        public async Task<IActionResult> Normal(int id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var shop = await db.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+
+            shop.isPremium = null;
+            await db.SaveChangesAsync();
+
+            return RedirectToAction(nameof(Index));
+        }
         public async Task<IActionResult> Reject(int? id)
         {
             if (id == null)

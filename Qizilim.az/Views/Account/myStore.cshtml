@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Products>
+﻿@model MainViewModel
 
 
 @{
@@ -12,18 +12,14 @@
         
         <div class="banner">
             <div id="banner" class="banner-shop-page owl-carousel owl-theme">
-                <div class="banner-div">
-                    <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-                </div>
-                <div class="banner-div">
-                    <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-                </div>
-                <div class="banner-div">
-                    <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-                </div>
-                <div class="banner-div">
-                    <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-                </div>
+                @foreach (var item in Model.Advertisement)
+                {
+                    <div class="banner-div">
+                        <img class="banner-area" src="~/photouploads/images/@item.Image" alt="">
+                    </div>
+                }
+
+
             </div>
         </div>
         <div class="shop-details-main-div">
@@ -31,10 +27,10 @@
                 <div class="shop-img-div">
                     <div class="shop-img">
 
-                        <img class="shop-page-img" src="@ViewBag.User.ProfileImg" alt="">
+                        <img class="shop-page-img" src="~/photouploads/ShopImages/@ViewBag.User.ProfileImg" alt="">
                     </div>
                     <div class="add-new-button-div">
-                        <a asp-controller="account" asp-action="addingProduct">
+                        <a asp-controller="account" asp-action="addProduct">
                             <div class="add-new-button-buton" id="follow-button">
                                 <div id="follow-button-svg-div">
 
@@ -48,7 +44,7 @@
                         </a>
 
                     </div>
-                    <a class="edit-user-bttn" asp-route-id="@ViewBag.User.Id"  asp-controller="account" asp-action="editTheAccount">
+                    <a class="edit-user-bttn" asp-route-id="@ViewBag.User.Id"  asp-controller="account" asp-action="editShopAccount">
 
                         <button type="button" class="css-button shop-edit-button">
                             <span class="css-button-icon">
@@ -135,7 +131,7 @@
                 <!-- <div class="all-vip-btn"><button class="btn-shw-all-vip">Butun Vip Elanlar</button></div> -->
             </div>
             <div class="praducts">
-                @foreach (var item in Model.OrderByDescending(p=>p.IreliCekilmisProduct == true))
+                @foreach (var item in Model.Products.OrderByDescending(p=>p.IreliCekilmisProduct == true))
                 {
             @if (item.PremiumProduct)
             {
@@ -143,7 +139,7 @@
                 <div class="container">
 
                     <div class="image">
-                        <img src="../../Main/images/products/New/4.jpg" alt="">
+                        <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
                     </div>
                     <div class="info">
 
@@ -152,16 +148,7 @@
                         <div class="prob-weight-div">
 
                             <div class="prob">
-                                @foreach (var item2 in ViewBag.ProductEyar)
-                                {
-                                    foreach (var eyar in ViewBag.Eyar)
-                                    {
-
-                                        if (item2.EyarId == eyar.Id)
-                                        {
-            @eyar.EyarOlcusu}
-                                        }
-                                    }
+                                @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
                             </div>
                             <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
                             @if (item.HasDiamond)
@@ -190,19 +177,13 @@
         </div>
 
         <div class="praducts">
-            @foreach (var item in Model.OrderByDescending(p=>p.IreliCekilmisProduct == true))
+            @foreach (var item in Model.Products.OrderByDescending(x=>x.CreatedDate))
             {
-                if (item.PremiumProduct)
-                {
-                    continue;
-                }
-                else 
-                {
                     <a asp-controller="Store" asp-action="ProductSingle" asp-route-id="@item.Id" style="text-decoration: none;">
                         <div class="container">
 
                             <div class="image">
-                                <img src="../../Main/images/products/New/4.jpg" alt="">
+                                <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
                             </div>
                             <div class="info">
 
@@ -213,17 +194,7 @@
                                 <div class="prob-weight-div">
 
                                     <div class="prob">
-                                        @foreach (var item2 in ViewBag.ProductEyar)
-                                        {
-                                            foreach (var eyar in ViewBag.Eyar)
-                                            {
-
-
-                                                if (item2.EyarId == eyar.Id)
-                                                {
-                @eyar.EyarOlcusu}
-                                            }
-                                        }
+                                        @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
                                     </div>
                                     <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
                                     @if (item.HasDiamond)
@@ -237,7 +208,6 @@
                             </div>
                         </div>
                     </a>
-                }
                 
                     
                 
@@ -249,18 +219,13 @@
     {
         <div class="banner">
             <div id="banner" class="banner-shop-page owl-carousel owl-theme">
-                <div class="banner-div">
-                    <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-                </div>
-                <div class="banner-div">
-                    <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-                </div>
-                <div class="banner-div">
-                    <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-                </div>
-                <div class="banner-div">
-                    <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-                </div>
+                @foreach (var item in Model.Advertisement)
+                {
+                    <div class="banner-div">
+                        <img class="banner-area" src="~/photouploads/images/@item.Image" alt="">
+                    </div>
+                }
+
 
             </div>
         </div>
@@ -269,7 +234,7 @@
                 <div class="shop-img-div">
                     <div class="shop-img">
 
-                        <img class="user-page-img" src="@ViewBag.User.ProfileImg" alt="">
+                        <img class="user-page-img" src="~/photouploads/ShopImages/@ViewBag.User.ProfileImg" alt="">
                     </div>
 
                 </div>
@@ -278,7 +243,7 @@
                         <span class="shop-name-div"><u>@ViewBag.User.UserName</u></span>
                     </div>
                     <div class="follower-counter-div">
-                        <a href="../../pages/markets/stores.html" class="following-page"><span class="follower-counter-span" id="follower-counter">2323</span><span class="follower-word-span">Following</span></a>
+                        <a asp-controller="Store" asp-action="Stores" class="following-page"><span class="follower-counter-span" id="follower-counter">@Model.Shops.Count()</span><span class="follower-word-span">Following</span></a>
                     </div>
                     <div class="follower-counter-div">
                         <a asp-controller="homepage" asp-action="liked" class="following-page"><span class="follower-counter-span" id="follower-counter">Beyendiklerim</span>
@@ -311,7 +276,7 @@
                     </div>
                     <div class="editprofile">
                         <!-- <button class="edit-profile"> <img src="../Main/images/asist-imgs/pencil-svgrepo-com.svg" alt="" srcset=""> Hesabi idare et</button> -->
-                        <a class="editUser" asp-controller="account" asp-action="editingAccount" asp-route-id="@ViewBag.User.Id">
+                        <a class="editUser" asp-controller="account" asp-action="detailUser" asp-route-id="@ViewBag.User.Id">
                             <button type="button" class="css-button">
                                 <span class="css-button-icon">
                                     <i class="fa fa-pencil"></i>
@@ -344,34 +309,43 @@
             <div class="shops-content-area">
 
                 <div class="my-shops-content-area-div ">
-                    @foreach (var item in ViewBag.Shops)
-                    {
-                        <a class="shops-content-att" asp-controller="store" asp-action="storesingle" asp-route-id="@item.Id">
-                            <div class="shops-content">
-                                <div class="img-card-shop">
-                                    <img src="../../Main/images/brands/brnd-3.jpg" alt="">
-                                </div>
-                                <div class="shop-name-highlight">
-                                    @item.shopName
-                                </div>
-                                <div class="location-card">
-                                    <img src="../../Main/images/asist-imgs/location-sign-svgrepo-com.svg" alt="">
-                                    <span>@item.shopLocation</span>
-                                </div>
-                                <div class="about-shop-card">
-                                    @item.aboutShop
-                                </div>
-                                <div class="contact-card">
-                                    <img src="../../Main/images/asist-imgs/phone.png" alt="">
-                                    <span>
-                                        : @item.shopNumber
-                                    </span>
+                @if (Model.Shops == null)
+                {
+                        <h2>Izlediyiniz magaza yoxdur</h2>
 
-                                </div>
-
-                            </div>
-                        </a>
                     }
+                    else
+                    {
+                        @foreach (var item in Model.Shops)
+                        {
+                            <a class="shops-content-att" asp-controller="store" asp-action="storesingle" asp-route-id="@item.Id">
+                                <div class="shops-content">
+                                    <div class="img-card-shop">
+                                        <img src="~/photouploads/ShopImages/@item.ProfileImg" alt="">
+                                    </div>
+                                    <div class="shop-name-highlight">
+                                        @item.shopName
+                                    </div>
+                                    <div class="location-card">
+                                        <img src="../../Main/images/asist-imgs/location-sign-svgrepo-com.svg" alt="">
+                                        <span>@item.shopLocation</span>
+                                    </div>
+                                    <div class="about-shop-card">
+                                        @item.aboutShop
+                                    </div>
+                                    <div class="contact-card">
+                                        <img src="../../Main/images/asist-imgs/phone.png" alt="">
+                                        <span>
+                                            : @item.shopNumber
+                                        </span>
+
+                                    </div>
+
+                                </div>
+                            </a>
+                        }
+                    }
+                    
 
                 </div>
             </div>
@@ -387,13 +361,13 @@
         </div>
 
         <div class="praducts">
-            @foreach (var item in Model)
+            @foreach (var item in Model.Products)
             {
                 <a asp-controller="Store" asp-action="ProductSingle" asp-route-id="@item.Id" style="text-decoration: none;">
                     <div class="container">
 
                         <div class="image">
-                            <img src="../../Main/images/products/New/4.jpg" alt="">
+                            <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
                         </div>
                         <div class="info">
 
@@ -402,22 +376,13 @@
                             <div class="prob-weight-div">
 
                                 <div class="prob">
-                                    @foreach (var item2 in ViewBag.ProductEyar)
-                                    {
-                                        foreach (var eyar in ViewBag.Eyar)
-                                        {
-
-
-                                            if (item2.EyarId == eyar.Id)
-                                            {
-                @eyar.EyarOlcusu}
-        }
-    }
+                                    @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
                                 </div>
                                 <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
                                 @if (item.HasDiamond)
                                 {
-            <div class="carat">@item.CountDiamond ct</div>}
+                                    <div class="carat">@item.CountDiamond ct</div>
+                                }
 
                             </div>
                             <div class="title-of-product">@item.aboutProduct.HtmlToPlainText().ToEllipse(20)</div>

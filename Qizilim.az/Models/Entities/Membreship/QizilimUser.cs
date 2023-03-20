@@ -34,7 +34,7 @@ namespace Qizilim.az.Models.Entities.Membreship
         public bool catdirilma { get; set; }
         public ICollection<FollowersShops> FollowerShops { get; set; }
         public int FollowerCount { get; set; }
-
+        public bool? isPremium { get; set; }
 
         public virtual ICollection<LikedProduct> LikedProducts { get; set; }
         public virtual ICollection<FollowUser> FollowUser { get; set; }

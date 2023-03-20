@@ -49,9 +49,26 @@
                         {
                             <td class="text-danger">Rejected</td>
                         }
+                        @if (item.isPremium == null)
+                        {
+                            <td>Standard</td>
+                        }
+                        else if(item.isPremium == true)
+                        {
+                            <td class="text-warning">Premium</td>
+                        }
+                        else if(item.isPremium == false)
+                        {
+                            <td >Silver</td>
+                        }
                         <td class="atributlar">
                             <a asp-controller="RegisterVerify" asp-action="Accept" asp-route-id="@item.Id" class="text-success">Accept</a> |
                             <a asp-controller="RegisterVerify" asp-action="Reject" asp-route-id="@item.Id" class="text-danger">Reject</a> 
+                        </td>
+                        <td class="atributlar">
+                            <a asp-controller="RegisterVerify" asp-action="Premium" asp-route-id="@item.Id" class="text-warning">Premium Et</a> |
+                            <a asp-controller="RegisterVerify" asp-action="Silver" asp-route-id="@item.Id" class="text-default">Silver Et</a> |
+                            <a asp-controller="RegisterVerify" asp-action="Normal" asp-route-id="@item.Id" class="text-success">Normal Et</a> 
                         </td>
                     </tr>}
                 </tbody>

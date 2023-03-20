@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Products>
+﻿@model MainViewModel
 
 
 @{ Layout = "_LayoutStore"; }
@@ -10,18 +10,17 @@
 
 <div class="banner">
     <div id="banner" class="banner-shop-page owl-carousel owl-theme">
-        <div class="banner-div">
-            <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-        </div>
-        <div class="banner-div">
-            <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-        </div>
-        <div class="banner-div">
-            <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-        </div>
-        <div class="banner-div">
-            <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-        </div>
+        @foreach (var item in Model.QizilimUser)
+        {
+            <div class="swiper-slide">
+                <div class="brands-carousel-img">
+                    <a asp-controller="store" asp-action="storesingle" asp-route-id="@item.Id" style="text-decoration: none;">
+                        <img class="sr-img-brand" src="~/photouploads/Shopimages/@item.ProfileImg" alt="">
+                        <span class="brands-store-name">@item.shopName</span>
+                    </a>
+                </div>
+            </div>
+        }
 
     </div>
 </div>
@@ -30,7 +29,7 @@
         <div class="shop-img-div">
             <div class="shop-img">
 
-                <img class="shop-page-img" src="../../Main/images/brands/brnd-1.jpg" alt="">
+                <img class="shop-page-img" src="~/photouploads/ShopImages/@ViewBag.Shop.ProfileImg" alt="">
             </div>
             @if (User.Identity.Name != null && User.IsInRole("User") && ViewBag.Follow == false)
             {
@@ -127,11 +126,11 @@
 <div class="premium-products-shop">
     <div class="vip-child-div">
         <div class="vip-text-premium-shop">Premium elanlar</div>
-        <!-- <div class="all-vip-btn"><button class="btn-shw-all-vip">Butun Vip Elanlar</button></div> -->
+         <div class="all-vip-btn"><button asp-controller="homepage" asp-action="vipproducts" class="btn-shw-all-vip">Butun Vip Elanlar</button></div> 
     </div>
     <div class="premium">
 
-        @foreach (var item in Model.OrderByDescending(p => p.IreliCekilmisProduct == true))
+        @foreach (var item in Model.Products.OrderByDescending(p => p.IreliCekilmisProduct == true))
         {
     @if (item.PremiumProduct)
     {
@@ -139,7 +138,7 @@
             <div class="container">
 
                 <div class="image">
-                    <img src="../../Main/images/products/New/4.jpg" alt="">
+                    <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
                 </div>
                 <div class="info">
 
@@ -148,17 +147,7 @@
                     <div class="prob-weight-div">
 
                         <div class="prob">
-                            @foreach (var item2 in ViewBag.ProductEyar)
-                            {
-                                foreach (var eyar in ViewBag.Eyar)
-                                {
-
-                                    if (item2.EyarId == eyar.Id)
-                                    {
-                                        @eyar.EyarOlcusu
-                                    }
-                                }
-                            }
+                            @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
                         </div>
                         <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
                         @if (item.HasDiamond)
@@ -191,19 +180,13 @@
 
 <div class="praducts">
 
-    @foreach (var item in Model.OrderByDescending(p => p.IreliCekilmisProduct == true))
+    @foreach (var item in Model.Products.OrderByDescending(p => p.CreatedDate))
     {
-        if (item.PremiumProduct)
-        {
-            continue;
-        }
-        else
-        {
             <a asp-controller="Store" asp-action="ProductSingle" asp-route-id="@item.Id" style="text-decoration: none;">
                 <div class="container">
 
                     <div class="image">
-                        <img src="../../Main/images/products/New/4.jpg" alt="">
+                        <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
                     </div>
                     <div class="info">
 
@@ -212,18 +195,7 @@
                         <div class="prob-weight-div">
 
                             <div class="prob">
-                                @foreach (var item2 in ViewBag.ProductEyar)
-                                {
-                                    foreach (var eyar in ViewBag.Eyar)
-                                    {
-
-
-                                        if (item2.EyarId == eyar.Id)
-                                        {
-                                            @eyar.EyarOlcusu
-                                        }
-                                    }
-                                }
+                                @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
                             </div>
                             <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
                             @if (item.HasDiamond)

@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Qizilim.az.Models.DataContext;
 using Qizilim.az.Models.Entities.Membreship;
+using Qizilim.az.Models.Entities.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -22,9 +23,17 @@ namespace Qizilim.az.Controllers
             this.userManager = userManager;
             this.db = db;
         }
-
         public async Task<IActionResult> Stores()
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
             if (User.Identity.Name != null)
             {
                 var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
@@ -39,11 +48,59 @@ namespace Qizilim.az.Controllers
                     return RedirectToAction("rejectedRegister", "account");
                 }
             }
-            var model = db.Users.Where(cp => cp.shopName != null).ToList();
+            var model = new MainViewModel();
+            model.QizilimUser = db.Users
+               .Where(cp => cp.shopName != null).ToList();
+            model.Advertisement = db.Advertisement
+                .Where(cp => cp.DeletedById == null).ToList();
+            model.Centers = centers;
+            return View(model);
+        }
+        public async Task<IActionResult> StoresFiltered(int id)
+        {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            if (User.Identity.Name != null)
+            {
+                var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
+                ViewBag.User = userAbout;
+
+                if (userAbout.Status == null)
+                {
+                    return RedirectToAction("verifyRegister", "account");
+                }
+                else if (userAbout.Status == false)
+                {
+                    return RedirectToAction("rejectedRegister", "account");
+                }
+            }
+            var center = await db.Centers.Where(x => x.Id == id).FirstOrDefaultAsync();
+            var model = new MainViewModel();
+            model.QizilimUser = db.Users
+               .Where(cp => cp.shopLocation == center.Name).ToList();
+            model.Advertisement = db.Advertisement
+                .Where(cp => cp.DeletedById == null).ToList();
+            model.Centers = centers;
+            ViewBag.CenterName = center.Name;
             return View(model);
         }
         public async Task<IActionResult> StoreSingle(int id)
         {
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
             if (User.Identity.Name != null)
             {
                 var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
@@ -72,12 +129,24 @@ namespace Qizilim.az.Controllers
             ViewBag.Eyar = db.Eyars.Where(u => u.DeletedById == null);
 
 
-            var model = db.Products
-                .Where(p => p.CreatedById == id && p.DeletedById == null).ToList();
+            var model = new MainViewModel();
+            model.Products = await db.Products
+                .Where(cp => cp.DeletedById == null && cp.CreatedById == id)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).ToListAsync();
+            model.QizilimUser = db.Users
+               .Where(cp => cp.shopName != null).ToList();
+            model.Advertisement = db.Advertisement
+                .Where(cp => cp.DeletedById == null).ToList();
             return View(model);
         }
         public async Task<IActionResult> FollowTheUser(int shopId)
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
             var user = await userManager.FindByNameAsync(User.Identity.Name);
 
             if (user.Status == null)
@@ -104,17 +173,40 @@ namespace Qizilim.az.Controllers
                 await db.FollowerShop.AddAsync(new FollowersShops()
                 {
                     FollowerId = user.Id,
-                    ShopId = shopId
-                });
+                    ShopId = shopId,
+                }) ;
             }
             
             await db.SaveChangesAsync();
             return Json(new { status = 200 });
         }
-
-        
         public async Task<IActionResult> ProductSingle(int id)
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            var model = new MainViewModel();
+            model.Products = await db.Products
+                .Where(p => p.Id == id)
+                .Include(p => p.ProductImages).ThenInclude(p => p.Image)
+                .Include(p => p.ProductEyar).ThenInclude(p => p.Eyar)
+                .Include(p => p.ProductColor).ThenInclude(p => p.Color).ToListAsync();
+
+            model.OxsarProducts = await db.Products.Where(p => p.DeletedById == null)
+                .Include(p => p.ProductImages).ThenInclude(p => p.Image)
+                .Include(p => p.ProductEyar).ThenInclude(p => p.Eyar)
+                .Include(p => p.ProductColor).ThenInclude(p => p.Color).ToListAsync();
+
+            var product = await db.Products.FirstOrDefaultAsync(p => p.Id == id);
+            var shop = await db.Users.FirstOrDefaultAsync(u => u.Id == product.CreatedById);
+            ViewBag.Shop = shop;
+
             if (User.Identity.Name != null)
             {
                 var nowUser = await userManager.FindByNameAsync(User.Identity.Name);
@@ -129,16 +221,10 @@ namespace Qizilim.az.Controllers
                 }
             }
 
-            var product = await db.Products.FirstOrDefaultAsync(p=>p.Id == id);
-            ViewBag.SingleProduct = product;
-            ViewBag.Shop = await db.Users.FirstOrDefaultAsync(u=>u.Id == product.CreatedById);
-            ViewBag.ProductEyar = db.ProductEyar.ToList();
+            
             ViewBag.LikedProducts = db.LikedProducts.Where(u => u.ProductId == id).ToList();
-            ViewBag.Eyar = db.Eyars.Where(u => u.DeletedById == null);
-
-            ViewBag.Oxsar = db.Products.OrderByDescending(p=>p.PremiumProduct == true).Where(p => p.Kateqoriya == product.Kateqoriya).ToList();
-
-            return View();
+            
+            return View(model);
         }
     }
 }

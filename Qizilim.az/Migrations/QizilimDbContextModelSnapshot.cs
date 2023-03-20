@@ -178,6 +178,9 @@ namespace Qizilim.az.Migrations
                     b.Property<int>("ProductId")
                         .HasColumnType("int");
 
+                    b.Property<bool?>("IsMain")
+                        .HasColumnType("bit");
+
                     b.HasKey("ImageId", "ProductId");
 
                     b.HasIndex("ProductId");
@@ -408,6 +411,9 @@ namespace Qizilim.az.Migrations
 
                     b.Property<string>("instagramLink")
                         .HasColumnType("nvarchar(max)");
+
+                    b.Property<bool?>("isPremium")
+                        .HasColumnType("bit");
 
                     b.Property<string>("shopLocation")
                         .HasColumnType("nvarchar(max)");

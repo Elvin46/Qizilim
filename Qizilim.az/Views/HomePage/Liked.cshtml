@@ -1,4 +1,4 @@
-﻿@model IEnumerable<Products>
+﻿@model MainViewModel
 
 
 
@@ -13,7 +13,7 @@
 
 
 <div class="praducts">
-    @foreach (var item in Model.OrderByDescending(p => p.PremiumProduct == true))
+    @foreach (var item in Model.Products.OrderByDescending(p => p.PremiumProduct == true))
     {
         foreach (var liked in ViewBag.LikedProducts)
         {
@@ -23,7 +23,7 @@
                     <div class="container">
 
                         <div class="image">
-                            <img src="../../Main/images/products/New/4.jpg" alt="">
+                            <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
                         </div>
                         <div class="info">
 
@@ -37,25 +37,14 @@
                             <div class="prob-weight-div">
 
                                 <div class="prob">
-                                    @foreach (var item2 in ViewBag.ProductEyar)
-                                    {
-                                        if (item2.ProductId == item.Id)
-                                        {
-                                            foreach (var eyar in ViewBag.Eyar)
-                                            {
-
-                                                if (item2.EyarId == eyar.Id)
-                                                {
-            @eyar.EyarOlcusu}
-    }
-}
-}
+                                    @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
 
                                 </div>
                                 <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
                                 @if (item.HasDiamond)
                                 {
-        <div class="carat">@item.CountDiamond ct</div>}
+                                    <div class="carat">@item.CountDiamond ct</div>
+                                }
 
                             </div>
                             <div class="title-of-product">@item.aboutProduct.HtmlToPlainText().ToEllipse(20)</div>
@@ -70,25 +59,20 @@
 
     }
 </div>
-  </div>
+
 
 
 
 
 <div class="banner">
     <div id="banner" class="banner-shop-page owl-carousel owl-theme">
-        <div class="banner-div">
-            <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-        </div>
-        <div class="banner-div">
-            <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-        </div>
-        <div class="banner-div">
-            <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-        </div>
-        <div class="banner-div">
-            <img class="banner-area" src="https://media.giphy.com/media/UkyPa531vLhlKkTXqg/giphy.gif" alt="">
-        </div>
+        @foreach (var item in Model.Advertisement)
+        {
+            <div class="banner-div">
+                <img class="banner-area" src="~/photouploads/images/@item.Image" alt="">
+            </div>
+        }
+
 
     </div>
 </div>
@@ -102,7 +86,7 @@
 
 
 <div class="praducts">
-    @foreach (var item in Model.OrderByDescending(p => p.IreliCekilmisProduct == true))
+    @foreach (var item in Model.Products.OrderByDescending(p => p.IreliCekilmisProduct == true))
     {
         if (item.PremiumProduct)
         {
@@ -114,7 +98,7 @@
                 <div class="container">
 
                     <div class="image">
-                        <img src="../../Main/images/products/New/4.jpg" alt="">
+                        <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
                     </div>
                     <div class="info">
 
@@ -123,25 +107,14 @@
                         <div class="prob-weight-div">
 
                             <div class="prob">
-                                @foreach (var item2 in ViewBag.ProductEyar)
-                                {
-                                    if (item2.ProductId == item.Id)
-                                    {
-                                        foreach (var eyar in ViewBag.Eyar)
-                                        {
-
-                                            if (item2.EyarId == eyar.Id)
-                                            {
-            @eyar.EyarOlcusu}
-    }
-}
-}
+                                @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
 
                             </div>
                             <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
                             @if (item.HasDiamond)
                             {
-        <div class="carat">@item.CountDiamond ct</div>}
+                                <div class="carat">@item.CountDiamond ct</div>
+                            }
 
                         </div>
                         <div class="title-of-product">@item.aboutProduct.HtmlToPlainText().ToEllipse(20)</div>

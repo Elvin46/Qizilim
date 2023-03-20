@@ -1,4 +1,5 @@
-﻿using MediatR;
+﻿using MailKit.Net.Smtp;
+using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
@@ -7,16 +8,23 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using MimeKit;
+using Newtonsoft.Json;
 using Qizilim.az.AppCode.Extensions;
 using Qizilim.az.AppCode.Modules;
 using Qizilim.az.AppCode.Modules.AccountModule;
 using Qizilim.az.Models.DataContext;
+using Qizilim.az.Models.Entities;
 using Qizilim.az.Models.Entities.Membreship;
+using Qizilim.az.Models.Entities.ViewModels;
+using Qizilim.az.Models.FormModels;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
+using static Qizilim.az.Models.Entities.Color;
+using static Qizilim.az.Models.Entities.Images;
 
 namespace Qizilim.az.Controllers
 {
@@ -44,17 +52,16 @@ namespace Qizilim.az.Controllers
         }
 
         [AllowAnonymous]
-        [Route("/signin.html")]
+        //[Route("/signin.html")]
         public async Task<IActionResult> Signin()
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
             ViewBag.Center = await db.Centers.Where(c => c.DeletedById == null).ToListAsync();
             return View();
         }
-
-
         [HttpPost]
         [AllowAnonymous]
-        [Route("/signin.html")]
+        //[Route("/signin.html")]
         public async Task<IActionResult> Signin(SigninCommand command)
         {
             var centers = await db.Centers.Where(c => c.DeletedById == null).ToListAsync();
@@ -66,8 +73,12 @@ namespace Qizilim.az.Controllers
                 return View(command);
             }
 
-            var user = await db.Users.Where(u => u.UserName == command.Username).FirstOrDefaultAsync();
-
+            var user = await db.Users.Where(u => u.UserName == command.Username && u.EmailConfirmed == true).FirstOrDefaultAsync();
+            
+            if (user.EmailConfirmed == false)
+            {
+                return View(command);
+            }
             if (user.Status == null)
             {
                 return RedirectToAction("verifyRegister", "Account");
@@ -93,25 +104,31 @@ namespace Qizilim.az.Controllers
             {
                 return Redirect(redirectUrl);
             }
+            
+            
             return RedirectToAction("Index", "homepage");
         }
-
-
         [AllowAnonymous]
-        [Route("/signout.html")]
+        [Route("/signin.html")]
         public async Task<IActionResult> SignOut()
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
             await signInManager.SignOutAsync();
             return RedirectToAction("Index", "Homepage");
         }
-
-
-
         public async Task<IActionResult> myStore()
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
             var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
             ViewBag.User = userAbout;
-
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
 
             if (userAbout.Status == null)
             {
@@ -128,147 +145,303 @@ namespace Qizilim.az.Controllers
             ViewBag.Shops = db.Users.Where(u => u.shopName != null).ToList();
 
             ViewBag.LikedProducts = db.LikedProducts.Where(lp => lp.UserId == userAbout.Id);
-
-            var model = db.Products
-                .Where(p => p.DeletedById == null && p.CreatedById == userAbout.Id).ToList();
+            var followedShops = await db.FollowerShop.Where(x => x.FollowerId == userAbout.Id).ToListAsync();
+            List<QizilimUser> shops = new List<QizilimUser>();
+            foreach (var item in followedShops)
+            {
+                var shop = await db.Users.Where(x => x.Id == item.ShopId).FirstOrDefaultAsync();
+                shops.Add(shop);
+            }
+            var model = new MainViewModel();
+            model.Products = await db.Products
+                .Where(cp => cp.DeletedById == null && cp.CreatedById == userAbout.Id)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).ToListAsync();
+            model.QizilimUser = db.Users
+               .Where(cp => cp.Id == userAbout.Id).ToList();
+            model.Shops = shops;
+            model.Advertisement = db.Advertisement
+                .Where(cp => cp.DeletedById == null).ToList();
             return View(model);
         }
-
-
-        public async Task<IActionResult> editTheAccount(AccountSingleQuery query)
+        public async Task<IActionResult> editShopAccount(int? id)
         {
-            var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
-            var centers = await db.Centers.Where(c => c.DeletedById == null).ToListAsync();
-            ViewBag.User = userAbout;
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
             ViewBag.Centers = centers;
-
-
-            if (userAbout.Status == null)
-            {
-                return RedirectToAction("verifyRegister", "account");
-            }
-            else if (userAbout.Status == false)
-            {
-                return RedirectToAction("rejectedRegister", "account");
-            }
-
-            var entity = await mediator.Send(query);
+            var entity = await db.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
             if (entity == null)
             {
                 return NotFound();
             }
 
-            var command = new AccountEditCommand();
-            command.ProfileImg = entity.ProfileImg;
-            command.Email = entity.Email;
-            command.shopName = entity.shopName;
-            command.shopLocation = entity.shopLocation;
-            command.shopNumber = entity.shopNumber;
-            command.aboutShop = entity.aboutShop;
-            command.whatsappNumber = entity.whatsappNumber;
-            command.instagramLink = entity.instagramLink;
-            command.tiktokLink = entity.tiktokLink;
-            command.catdirilma = entity.catdirilma;
-            return View(command);
+            var userAbout = await db.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
+            ViewBag.userAbout = userAbout;
+
+            var model = new editAccountViewModel();
+            model.Email = entity.Email;
+            model.aboutShop = entity.aboutShop;
+            model.shopLocation = entity.shopLocation;
+            model.shopName = entity.shopName;
+            model.shopNumber = entity.shopNumber;
+            model.instagramLink = entity.instagramLink;
+            model.tiktokLink = entity.tiktokLink;
+            model.whatsappNumber = entity.whatsappNumber;
+            model.catdirilma = entity.catdirilma;
+            model.ProfileImg = entity.ProfileImg;
+
+            return View(model);
         }
-
-        [HttpPost]
-        public async Task<IActionResult> editTheAccount(int id, AccountEditCommand command)
-        {
-            var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
-
-            ViewBag.User = userAbout;
-
-
-            if (userAbout.Status == null)
-            {
-                return RedirectToAction("verifyRegister", "account");
-            }
-            else if (userAbout.Status == false)
-            {
-                return RedirectToAction("rejectedRegister", "account");
-            }
-
-
-            if (id != command.Id)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                var response = await mediator.Send(command);
-
-                return RedirectToAction(nameof(Index));
-            }
-            return View(command);
-        }
-
-
-
-
-        public async Task<IActionResult> addingProduct()
-        {
-
-
-            var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
-
-            ViewBag.User = userAbout;
-
-
-            if (userAbout.Status == null)
-            {
-                return RedirectToAction("verifyRegister", "account");
-            }
-            else if (userAbout.Status == false)
-            {
-                return RedirectToAction("rejectedRegister", "account");
-            }
-
-            ViewBag.Color = new SelectList(db.Colors, "Id", "Name");
-            ViewBag.Category = await db.Kateqoriya.Where(i => i.DeletedById == null).ToListAsync();
-            ViewBag.Eyar = new SelectList(db.Eyars, "Id", "EyarOlcusu");
-            return View();
-        }
-
-
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> addingProduct(ProductCreateCommand command)
+        public async Task<IActionResult> editShopAccount(editAccountViewModel model)
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            var entity = await db.Users.Where(u => u.Id == model.Id).FirstOrDefaultAsync();
 
 
-            var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
-
-            ViewBag.User = userAbout;
-
-            if (userAbout.Status == null)
+            if (model?.file == null)
             {
-                return RedirectToAction("verifyRegister", "account");
-            }
-            else if (userAbout.Status == false)
-            {
-                return RedirectToAction("rejectedRegister", "account");
+                ctx.AddModelError("ProfileImg", "Fayl Sechilmeyib!");
             }
 
-            if (ModelState.IsValid)
+            if (ctx.ModelIsValid())
             {
-                var response = await mediator.Send(command);
-                return RedirectToAction(nameof(Index));
+                if (entity.ProfileImg == null)
+                {
+                    string fileExtension = Path.GetExtension(model.file.FileName);
+
+                    string name = $"shop-{Guid.NewGuid()}{fileExtension}";
+                    string physicalPath = Path.Combine(env.ContentRootPath, "wwwroot", "photouploads", "Shopimages", name);
+
+                    using (FileStream fs = new FileStream(physicalPath, FileMode.Create, FileAccess.Write))
+                    {
+                        await model.file.CopyToAsync(fs);
+                    }
+                    entity.ProfileImg = name;
+                }
+                else if (entity.ProfileImg != null)
+                {
+                    string OldFileName = entity.ProfileImg;
+
+                    string fileExtension = Path.GetExtension(model.file.FileName);
+
+                    string name = $"shop-{Guid.NewGuid()}{fileExtension}";
+                    string physicalPath = Path.Combine(env.ContentRootPath, "wwwroot", "photouploads", "Shopimages", name);
+
+                    using (var fs = new FileStream(physicalPath, FileMode.Create, FileAccess.Write))
+                    {
+                        await model.file.CopyToAsync(fs);
+                    }
+                    entity.ProfileImg = name;
+
+                    string physicalPathOld = Path.Combine(env.ContentRootPath, "wwwroot", "photouploads", "Shopimages", OldFileName);
+
+                    if (System.IO.File.Exists(physicalPathOld))
+                    {
+                        System.IO.File.Delete(physicalPathOld);
+                    }
+                }
+
+                entity.shopName = model.shopName;
+                entity.Email = model.Email;
+                entity.aboutShop = model.aboutShop;
+                entity.instagramLink = model.instagramLink;
+                entity.tiktokLink = model.tiktokLink;
+                entity.whatsappNumber = model.whatsappNumber;
+                entity.shopLocation = model.shopLocation;
+                entity.catdirilma = model.catdirilma;
+                await db.SaveChangesAsync();
+                return RedirectToAction("myStore", "Account");
+
             }
-            ViewBag.Color = new SelectList(db.Colors, "Id", "Name");
-            ViewBag.Category = await db.Kateqoriya.Where(i => i.DeletedById == null).ToListAsync();
-            ViewBag.Eyar = new SelectList(db.Eyars, "Id", "EyarOlcusu");
-            return RedirectToAction("myStore", "account");
+
+            return NotFound();
+
         }
+        public async Task<IActionResult> detailUser()
+        {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            var userNow = await userManager.FindByNameAsync(User.Identity.Name);
+
+            var entity = await db.Users.Where(u => u.Id == userNow.Id).FirstOrDefaultAsync();
+            ViewBag.User = entity;
 
 
+            return View();
+        }
+        public async Task<IActionResult> addProduct()
+        {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            ViewBag.Eyyar = await db.Eyars.Where(k => k.DeletedById == null).ToListAsync();
+            ViewBag.Colors = await db.Colors.Where(k => k.DeletedById == null).ToListAsync();
+            ViewBag.Kateqoriya = await db.Kateqoriya.Where(k => k.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            return View();
+        }
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> addProduct(addingProductViewModel model)
+        {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            ViewBag.Eyyar = await db.Eyars.Where(k => k.DeletedById == null).ToListAsync();
+            ViewBag.Colors = await db.Colors.Where(k => k.DeletedById == null).ToListAsync();
+            ViewBag.Kateqoriya = await db.Kateqoriya.Where(k => k.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            if (model?.files == null)
+            {
+                ctx.AddModelError("files", "Fayl Sechilmeyib!");
+            }
+            if (!ctx.ModelIsValid())
+            {
+                return View(model);
+            }
+            var product = new Products();
+            product.Name = model.Name;
+            product.aboutProduct = model.aboutProduct;
+            product.Price = model.Price;
+            product.Weight = model.Weight;
+            product.HasDiamond = model.HasDiamond;
+            product.CountDiamond = model.CountDiamond;
+            product.Kateqoriya = model.Kateqoriya;
+            product.CreatedDate = DateTime.UtcNow.AddHours(4);
+            product.CreatedById = ctx.GetPrincipalId();
 
+            await db.Products.AddAsync(product);
+            int affected = await db.SaveChangesAsync();
+            int count = 0;
+            if (affected > 0 && model.EyarOlcusuId != null)
+            {
+                await db.ProductEyar.AddAsync(new ProductEyar
+                {
+                    ProductId = product.Id,
+                    EyarId = model.EyarOlcusuId
+                });
+
+                await db.SaveChangesAsync();
+            }
+            if (affected > 0 && model.ColorsId != null)
+            {
+
+                await db.ProductColors.AddAsync(new ProductColors
+                {
+                    ProductId = product.Id,
+                    ColorId = model.ColorsId
+                });
+                await db.SaveChangesAsync();
+            }
+            if (affected > 0 && model.files != null && model.files.Length > 0)
+            {
+                foreach (var images in model.files)
+                {
+                    count++;
+                    string fileExtension = Path.GetExtension(images.FileName);
+
+                    string name = $"product-{Guid.NewGuid()}{fileExtension}";
+                    string physicalPath = Path.Combine(env.ContentRootPath, "wwwroot", "photouploads", "ProductImages", name);
+
+                    using (FileStream fs = new FileStream(physicalPath, FileMode.Create, FileAccess.Write))
+                    {
+                        await images.CopyToAsync(fs);
+                    }
+
+                    var mainClassImg = new Images();
+                    mainClassImg.Path = name;
+                    mainClassImg.CreatedDate = DateTime.UtcNow.AddHours(4);
+                    mainClassImg.CreatedById = ctx.GetPrincipalId();
+                    await db.Images.AddAsync(mainClassImg);
+                    var result = await db.SaveChangesAsync();
+
+                    if (result > 0)
+                    {
+                        if (model.MainPhoto == images.FileName)
+                        {
+                            await db.ProductImage.AddAsync(new ProductImage
+                            {
+                                ProductId = product.Id,
+                                ImageId = mainClassImg.Id,
+                                IsMain = true
+                            });
+                        }
+                        else
+                        {
+                            await db.ProductImage.AddAsync(new ProductImage
+                            {
+                                ProductId = product.Id,
+                                ImageId = mainClassImg.Id,
+                                IsMain = false
+                            });
+                        }
+                        if (model.MainPhoto == null)
+                        {
+                            if (count == 1)
+                            {
+                                await db.ProductImage.AddAsync(new ProductImage
+                                {
+                                    ProductId = product.Id,
+                                    ImageId = mainClassImg.Id,
+                                    IsMain = true
+                                });
+                            }
+                            else
+                            {
+                                await db.ProductImage.AddAsync(new ProductImage
+                                {
+                                    ProductId = product.Id,
+                                    ImageId = mainClassImg.Id,
+                                    IsMain = false
+                                });
+                            }
+                        }
+                        
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+            return RedirectToAction("myStore", "Account");
+        }
         public async Task<IActionResult> DeleteProduct(int? id)
         {
+            var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
             if (User.Identity.Name != null)
             {
-                var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
+                
                 ViewBag.User = userAbout;
 
                 if (userAbout.Status == null)
@@ -279,49 +452,48 @@ namespace Qizilim.az.Controllers
                 {
                     return RedirectToAction("rejectedRegister", "account");
                 }
+
             }
             if (id == null)
             {
                 return NotFound();
             }
-
-            var centers = await db.Centers
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (centers == null)
+            var product = await db.Products.Where(x => x.Id == id).FirstOrDefaultAsync();
+            if (product.CreatedById != userAbout.Id)
             {
-                return NotFound();
+                return BadRequest();
             }
+            product.DeletedById = userAbout.Id;
+            product.DeletedDate = DateTime.UtcNow.AddHours(4);
+            await db.SaveChangesAsync();
 
-            return View(centers);
+            return RedirectToAction("myStore","Account");
         }
+        //[HttpPost]
+        //public async Task<IActionResult> DeleteProduct(ProductRemoveCommand command)
+        //{
+        //    ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+        //    if (User.Identity.Name != null)
+        //    {
+        //        var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
+        //        ViewBag.User = userAbout;
 
+        //        if (userAbout.Status == null)
+        //        {
+        //            return RedirectToAction("verifyRegister", "account");
+        //        }
+        //        else if (userAbout.Status == false)
+        //        {
+        //            return RedirectToAction("rejectedRegister", "account");
+        //        }
+        //    }
+        //    var response = await mediator.Send(command);
 
-        [HttpPost]
-        public async Task<IActionResult> DeleteProduct(ProductRemoveCommand command)
-        {
-            if (User.Identity.Name != null)
-            {
-                var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
-                ViewBag.User = userAbout;
-
-                if (userAbout.Status == null)
-                {
-                    return RedirectToAction("verifyRegister", "account");
-                }
-                else if (userAbout.Status == false)
-                {
-                    return RedirectToAction("rejectedRegister", "account");
-                }
-            }
-            var response = await mediator.Send(command);
-
-            return Json(response);
-        }
-
-
-
+        //    return Json(response);
+        //}
         public async Task<IActionResult> PremiumProduct(int? productId, int dayPremium)
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
             var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
 
             ViewBag.User = userAbout;
@@ -358,12 +530,9 @@ namespace Qizilim.az.Controllers
 
             return Json(new { status = 200 });
         }
-
-
-
-
         public async Task<IActionResult> FirstProduct(int? productId)
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
             var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
 
             ViewBag.User = userAbout; 
@@ -382,12 +551,13 @@ namespace Qizilim.az.Controllers
 
             var products = await db.Products.FirstOrDefaultAsync(lp => lp.Id == productId);
 
-            if (products.IreliCekilmisProduct)
+            //if (products.IreliCekilmisProduct)
+            //{
+            //    return Json(new { status = 100 });
+            //}
+            if(userAbout.Wallet >= 1)
             {
-                return Json(new { status = 100 });
-            }
-            else if(userAbout.Wallet >= 1)
-            {
+                products.CreatedDate = DateTime.UtcNow.AddHours(4);
                 products.IreliCekilmisProduct = true;
                 products.IreliStartDate = DateTime.UtcNow.AddHours(4);
                 products.IreliEndDate = DateTime.UtcNow.AddDays(1).AddHours(4);
@@ -402,10 +572,10 @@ namespace Qizilim.az.Controllers
 
             return Json(new { status = 200 });
         }
-
         [AllowAnonymous]
         public async Task<IActionResult> verifyRegister()
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
             if (User.Identity.Name != null)
             {
                 var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
@@ -418,9 +588,9 @@ namespace Qizilim.az.Controllers
             }
             return View();
         }
-
         public async Task<IActionResult> rejectedRegister()
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
             if (User.Identity.Name != null)
             {
                 var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
@@ -430,10 +600,9 @@ namespace Qizilim.az.Controllers
             }
             return View();
         }
-
-
         public async Task<IActionResult> addWallet(int countWallet)
         {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
             var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
 
             userAbout.Wallet += countWallet;

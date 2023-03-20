@@ -44,7 +44,13 @@ namespace Qizilim.az
 
             services.AddDbContext<QizilimDbContext>(cfg =>
             {
-                cfg.UseSqlServer(configuration.GetConnectionString("cString"));
+                
+                cfg.UseSqlServer(configuration.GetConnectionString("cString"),
+                    options => options.EnableRetryOnFailure(
+                        maxRetryCount: 10,
+                        maxRetryDelay: TimeSpan.FromSeconds(30),
+                        errorNumbersToAdd: null
+                        ));
             });
 
             services.AddIdentity<QizilimUser, QizilimRole>()
@@ -57,14 +63,12 @@ namespace Qizilim.az
             services.Configure<IdentityOptions>(cfg =>
             {
                 cfg.User.RequireUniqueEmail = true;
-
                 cfg.Password.RequireNonAlphanumeric = false;
                 cfg.Password.RequireUppercase = false;
                 cfg.Password.RequireLowercase = false;
                 cfg.Password.RequiredLength = 3;
                 cfg.Password.RequireDigit = false;
                 cfg.Password.RequiredUniqueChars = 1;
-
                 cfg.Lockout.MaxFailedAccessAttempts = 3;
                 cfg.Lockout.DefaultLockoutTimeSpan = new TimeSpan(0, 1, 0);
             });
@@ -110,7 +114,7 @@ namespace Qizilim.az
         {
             app.UseStaticFiles();
             app.UseRouting();
-
+            
 
             app.InitMembership();
 

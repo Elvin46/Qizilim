@@ -1,4 +1,4 @@
-﻿@model IEnumerable<QizilimUser>
+﻿@model MainViewModel
 @{ 
     Layout = "_LayoutStore";
 }
@@ -6,16 +6,17 @@
 
     <div class="sr-content swiper-wrapper">
 
-        @foreach (var item in Model)
+        @foreach (var item in Model.QizilimUser.Where(x=>x.isPremium == true))
         {
-<div class="swiper-slide">
-    <div class="brands-carousel-img">
-        <a asp-controller="store" asp-action="storesingle" asp-route-id="@item.Id" style="text-decoration: none;">
-            <img class="sr-img-brand" src="~/Main/images/brands/brnd-2.jpg" alt="">
-            <span class="brands-store-name">@item.shopName</span>
-        </a>
-    </div>
-</div>}
+            <div class="swiper-slide">
+                <div class="brands-carousel-img">
+                    <a asp-controller="store" asp-action="storesingle" asp-route-id="@item.Id" style="text-decoration: none;">
+                        <img class="sr-img-brand" src="~/photouploads/Shopimages/@item.ProfileImg" alt="">
+                        <span class="brands-store-name">@item.shopName</span>
+                    </a>
+                </div>
+            </div>
+        }
 
 
 
@@ -78,22 +79,20 @@
         <details class="custom-select stores-fil">
             <summary class="radios">
                 <input type="radio" name="item-sores-fil" id="default" title-store-filter="Ticaret Merkezleri " checked>
-                <input type="radio" name="item-sores-fil" id="item41" title-store-filter="Lacin">
-                <input type="radio" name="item-sores-fil" id="item42" title-store-filter="Moskva">
-                <input type="radio" name="item-sores-fil" id="item43" title-store-filter="Merkezi">
-
+                @foreach (var item in Model.Centers)
+               {
+                   string rads = "item"+item.Id.ToString();
+                    <input type="radio" name="item-sores-fil" id="@rads" title-store-filter="@item.Name">  
+               }
             </summary>
             <ul class="selector-list">
-                <li>
-                    <label class="selector-label" for="item41">Lacin</label>
-                </li>
-
-                <li>
-                    <label class="selector-label" for="item42">Moskva</label>
-                </li>
-                <li>
-                    <label class="selector-label" for="item43">Merkezi</label>
-                </li>
+                @foreach (var item in Model.Centers)
+               {
+                   string rads = "item"+item.Id.ToString();
+                    <li>
+                        <label class="selector-label" for="@rads"><a asp-controller="Store" asp-action="StoresFiltered" asp-route-id="@item.Id">@item.Name</a></label>
+                    </li>
+               }
 
 
             </ul>
@@ -106,12 +105,12 @@
 
     <div class="shops-content-area-div">
 
-        @foreach (var item in Model)
+        @foreach (var item in Model.QizilimUser)
         {
             <a class="shops-content-att" asp-controller="store" asp-action="storesingle" asp-route-id="@item.Id">
                 <div class="shops-content">
                     <div class="img-card-shop">
-                        <img src="~/Main/images/brands/brnd-2.jpg" alt="">
+                        <img src="~/photouploads/ShopImages/@item.ProfileImg" alt="">
                     </div>
                     <div class="shop-name-highlight">
                         @item.shopName
@@ -126,7 +125,7 @@
                     <div class="contact-card">
                         <img src="~/Main/images/asist-imgs/phone.png" alt="">
                         <span>
-                            : (+994)@item.shopNumber
+                            : @item.shopNumber
                         </span>
 
                     </div>

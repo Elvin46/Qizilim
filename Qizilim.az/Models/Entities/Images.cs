@@ -21,6 +21,7 @@ namespace Qizilim.az.Models.Entities
             public virtual Products Product { get; set; }
             public int ImageId { get; set; }
             public virtual Images Image { get; set; }
+            public bool? IsMain { get; set; }
         }
     }
 }

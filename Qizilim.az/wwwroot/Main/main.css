@@ -469,7 +469,7 @@ html,
     display: flex;
     justify-content: space-around;
 }
-.show-all-btn-div{
+.show-all-btn-div{  
     margin: 30px 25px;
     width: 100%;
     text-align: center;

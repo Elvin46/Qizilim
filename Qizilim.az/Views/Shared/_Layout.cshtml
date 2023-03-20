@@ -1,4 +1,7 @@
-﻿<!DOCTYPE html>
+﻿@{
+}
+
+<!DOCTYPE html>
 <html lang="en">
 
 <head>
@@ -16,11 +19,9 @@
     <meta property="og:description" content="Əsas Səhifə | Qızılımaz-da elan yerləşdirib, paylaşa bilərsiniz" />
     <title>Qızılım.az</title>
     <!-- Fonts -->
-
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight&family=Raleway:ital,wght@0,800;1,300&family=Ubuntu:wght@500&display=swap"
-          rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter+Tight&family=Raleway:ital,wght@0,800;1,300&family=Ubuntu:wght@500&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.2.0/css/all.min.css" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/OwlCarousel2/2.3.4/assets/owl.carousel.min.css" integrity="sha512-tS3S5qG0BlhnQROyJXvNjeEM4UpMXHrQfTGmbQ1gKmelCxlSEBUaxhRBj/EFTzpbP4RVSrpEikbmdJobCvhE3g==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 
@@ -47,7 +48,7 @@
 
                         <form novalidate="novalidate" onsubmit="return false;" class="searchbox sbx-custom">
                             <div role="search" class="sbx-twitter__wrapper">
-                                <input type="search" name="search" placeholder="Search your website" autocomplete="off" required="required" class="sbx-custom__input" id="search_input">
+                                <input type="search" name="searchedText" placeholder="Search your website" autocomplete="off" required="required" class="sbx-custom__input" id="search_input">
                                 <button type="submit" title="Submit your search query." class="sbx-custom__submit" id="search_button">
                                     <svg role="img" aria-label="Search">
                                         <use xlink:href="#sbx-icon-search-17"></use>
@@ -65,30 +66,56 @@
                         </script>
                     </a>
 
-                    <a class="icons-top-a" asp-controller="homepage" asp-action="liked">
+                    
+
+                    @if (User.Identity.Name != null)
+                    {
+                        if (ViewBag.User.shopName != null)
+                        {
+                            <div class="user_info">
+                                <button class="user_email"> <a asp-controller="account" asp-action="myStore" style="color: #C1957C; text-decoration:none;">@User.Identity.Name</a><i class="fa-solid fa-angle-down"></i></button>
+                                <ul>
+                                    <li><a asp-controller="account" asp-action="signout" style="text-decoration: none; color: inherit; font-size: 16px;">Hesabdan cix</a></li>
+                                    <li><a asp-controller="account" asp-action="myStore" style="text-decoration: none; color: inherit; font-size: 16px;">Hesabi idare et</a></li>
+                                    <li style="text-decoration: none; color: inherit; font-size: 16px;">Balans: @ViewBag.User.Wallet</li>
+                                </ul>
+                            </div>
+                        }
+                        else
+                        {
+                            <a class="icons-top-a" asp-controller="homepage" asp-action="liked">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart"
+                                        viewBox="0 0 16 16">
+                                    <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" />
+                                </svg>
+                            </a>
+                            <div class="user_info">
+                                <button class="user_email"> <a asp-controller="account" asp-action="myStore" style="color: #C1957C; text-decoration:none;">@User.Identity.Name</a><i class="fa-solid fa-angle-down"></i></button>
+                                <ul>
+                                    <li><a asp-controller="account" asp-action="signout" style="text-decoration: none; color: inherit; font-size: 16px;">Hesabdan cix</a></li>
+                                    <li><a asp-controller="account" asp-action="myStore" style="text-decoration: none; color: inherit; font-size: 16px;">Hesabi idare et</a></li>
+                                    <li style="text-decoration: none; color: inherit; font-size: 16px;">Balans: @ViewBag.User.Wallet</li>
+                                </ul>
+                            </div>
+                            
+                        }
+                    
+                    }
+                    else
+                    {
+                    <a class="icons-top-a" asp-controller="account" asp-action="signin">
                         <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-heart"
                              viewBox="0 0 16 16">
                             <path d="m8 2.748-.717-.737C5.6.281 2.514.878 1.4 3.053c-.523 1.023-.641 2.5.314 4.385.92 1.815 2.834 3.989 6.286 6.357 3.452-2.368 5.365-4.542 6.286-6.357.955-1.886.838-3.362.314-4.385C13.486.878 10.4.28 8.717 2.01L8 2.748zM8 15C-7.333 4.868 3.279-3.04 7.824 1.143c.06.055.119.112.176.171a3.12 3.12 0 0 1 .176-.17C12.72-3.042 23.333 4.867 8 15z" />
                         </svg>
                     </a>
-
-                    @if (User.Identity.Name != null)
-                    {
-        <div class="user_info">
-            <button class="user_email"> <a asp-controller="account" asp-action="myStore" style="color: #C1957C; text-decoration:none;">@User.Identity.Name</a><i class="fa-solid fa-angle-down"></i></button>
-            <ul>
-                <li><a asp-controller="account" asp-action="signout" style="text-decoration: none; color: inherit; font-size: 16px;">Hesabdan cix</a></li>
-                <li><a asp-controller="account" asp-action="myStore" style="text-decoration: none; color: inherit; font-size: 16px;">Hesabi idare et</a></li>
-            </ul>
-        </div> }
-    else
-    {
-<a class="icons-top-a" id="loginRegister" asp-controller="account" asp-action="signin">
-    <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person"
-         viewBox="0 0 16 16">
-        <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
-    </svg>
-</a>}
+                    <a class="icons-top-a" id="loginRegister" asp-controller="account" asp-action="signin">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="25" height="25" fill="currentColor" class="bi bi-person"
+                             viewBox="0 0 16 16">
+                            <path d="M8 8a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm2-3a2 2 0 1 1-4 0 2 2 0 0 1 4 0zm4 8c0 1-1 1-1 1H3s-1 0-1-1 1-4 6-4 6 3 6 4zm-1-.004c-.001-.246-.154-.986-.832-1.664C11.516 10.68 10.289 10 8 10c-2.29 0-3.516.68-4.168 1.332-.678.678-.83 1.418-.832 1.664h10z" />
+                        </svg>
+                    </a>
+                    }
 
                     <!--   <input type="checkbox" id="hamburger-input" class="burger-shower" />
                     <label id="hamburger-menu" for="hamburger-input"> -->
@@ -130,69 +157,61 @@
         <div class="filter-area" id="filter-area">
             <table>
                 <tr>
+                    @*CATEGORY*@
                     <td>
                         <details class="custom-select type">
                             <summary class="radios">
-                                <input type="radio" name="item-type" id="default" title-type="Nov" checked>
-                                <input type="radio" name="item-type" id="item1" title-type="Sep">
-                                <input type="radio" name="item-type" id="item2" title-type="Uzuk">
-                                <input type="radio" name="item-type" id="item3" title-type="Qolbaq">
-                                <input type="radio" name="item-type" id="item4" title-type="Dest">
+                                <input type="radio" name="item-type" id="default" filter-category="null" checked>
+                                @foreach (var item in ViewBag.Categories)
+                                {
+                                    <input type="radio" name="item-type" id="@item.Id" filter-category="@item.Id" category-name="@item.Name">
+                                }
                             </summary>
                             <ul class="selector-list">
-
-                                <li>
-                                    <label class="selector-label" for="item1">Sep</label>
-                                </li>
-                                <li>
-                                    <label class="selector-label" for="item2">Üzük</label>
-                                </li>
-                                <li>
-                                    <label class="selector-label" for="item3">Qolbaq</label>
-                                </li>
-                                <li>
-                                    <label class="selector-label" for="item4">Dəst</label>
-                                </li>
+                                @foreach (var item in ViewBag.Categories)
+                               {
+                                    <li>
+                                        <label class="selector-label" for="@item.Id" itemid="@item.Id">@item.Name</label>
+                                    </li>
+                               }
                             </ul>
                         </details>
-
                     </td>
+                    @*EYAR*@
                     <td>
                         <label class="filter-header">Əyar : <span id="adjust"></span></label>
                         <div class="radio-filter">
-
-                            <input type="checkbox" class="radio-filter_input adjust" name="diamond" id="myRadio1"><label class="radio-filter_label" for="myRadio1">583</label>
-                            <input type="checkbox" class="radio-filter_input adjust" name="diamond" id="myRadio2"><label class="radio-filter_label" for="myRadio2"> 585 </label>
-                            <input type="checkbox" class="radio-filter_input adjust" name="diamond" id="myRadio3"><label class="radio-filter_label" for="myRadio3"> 750</label>
-                            <input type="checkbox" class="radio-filter_input adjust" name="diamond" id="myRadio4"><label class="radio-filter_label" for="myRadio4">916</label>
+                            @foreach (var item in ViewBag.Eyars)
+                            {
+                                string rad = "myRadio" + item.Id.ToString();
+                                <input type="checkbox" class="radio-filter_input adjust" name="diamond" id="@rad" eyarId="@item.Id">
+                                <label class="radio-filter_label" for="@rad">@item.EyarOlcusu</label> 
+                           }
                         </div>
-
                     </td>
+                    @*WEIGHT*@
                     <td>
                         <label class="filter-header" style="margin-bottom: 8px;">Çəki <span class="fltr-header-detail">(qram)</span> : </label>
                         <div class="input_number_div">
                             <input class="input_number w-input_number_min" type="number" name="min-price" placeholder="Min" id="input_number_min">
                             <input class="input_number w-input_number_max" type="number" name="min-price" placeholder="Max" id="">
                         </div>
-
                     </td>
                 </tr>
-
-
                 <tr>
+                    @*HAS DIAMOND*@
                     <td>
-
                         <details class="custom-select diamond">
                             <summary class="radios">
-                                <input type="radio" name="item-diamond" id="default" title-diamond="Brilliant" checked>
-                                <input type="radio" name="item-diamond" id="item31" title-diamond="Hamsi">
+                                <input type="radio" name="item-diamond" id="default" title-diamond="Brilliant" checked disabled>
+                                <input type="radio" name="item-diamond" id="item55" title-diamond="Diger">
                                 <input type="radio" name="item-diamond" id="item32" title-diamond="Var">
                                 <input type="radio" name="item-diamond" id="item33" title-diamond="Yox">
 
                             </summary>
                             <ul class="selector-list">
-                                <li>
-                                    <label class="selector-label" for="item31">Hamsi</label>
+                                 <li>
+                                    <label class="selector-label" for="item55">Diger</label>
                                 </li>
                                 <li>
                                     <label class="selector-label" for="item32">Var</label>
@@ -204,61 +223,64 @@
 
                             </ul>
                         </details>
-
                     </td>
+                    @*COLOR*@
                     <td style="margin-right: 60px;">
 
                         <label class="filter-header" id="gColor">Qizil rengi : <span id="selected_color_text"></span></label>
                         <div class="radio-filter">
-                            <input type="checkbox" class="radio-filter_input color" name="g-color" id="g-color1">
+                            @*<input type="checkbox" class="radio-filter_input color" name="g-color" id="g-color1">
                             <label class="radio-filter_label" for="g-color1">Ag</label>
                             <input type="checkbox" class="radio-filter_input color" name="g-color" id="g-color2">
                             <label class="radio-filter_label" for="g-color2">Sari</label>
                             <input type="checkbox" class="radio-filter_input color" name="g-color" id="g-color3">
-                            <label class="radio-filter_label" for="g-color3">Rose</label>
+                            <label class="radio-filter_label" for="g-color3">Rose</label>*@
+                            @foreach (var item in ViewBag.Colors)
+                            {
+                                string rad = "g-color1" + item.Id.ToString();
+                                <input type="checkbox" class="radio-filter_input adjust" name="g-color" id="@rad" colorId="@item.Id">
+                                <label class="radio-filter_label" for="@rad">@item.Name</label> 
+                           }
                         </div>
-
                     </td>
+                    @*PRICE*@
                     <td>
                         <label class="filter-header" style="margin-bottom: 8px;">Qiymət <span class="fltr-header-detail">(Azn)</span>: </label>
                         <div class="input_number_div">
                             <input class="input_number p-input_number_min" type="number" name="min-price" placeholder="Min" id="input_number_min">
                             <input class="input_number p-input_number_max" type="number" name="min-price" placeholder="Max" id="">
                         </div>
-
                     </td>
                 </tr>
-
                 <tr>
+                    @*CENTERS*@
                     <td>
                         <details class="custom-select loc">
                             <summary class="radios">
-                                <input type="radio" name="item-loc" id="default" title-loc="Ticarət Mərkəzi" checked>
-                                <input type="radio" name="item-loc" id="item11" title-loc="Ticarət mərkəzləri">
-                                <input type="radio" name="item-loc" id="item12" title-loc="Moska T/M">
-                                <input type="radio" name="item-loc" id="item13" title-loc="Mərkəzi Univermaq T/M">
-                                <input type="radio" name="item-loc" id="item14" title-loc="Laçın T/M">
-                                <input type="radio" name="item-loc" id="item15" title-loc="Diger
-                ">
+                                <input type="radio" name="item-loc" id="default" title-loc="null" checked>
+                                
+                                @foreach (var item in ViewBag.Centers)
+                                {
+                                    string rad = "item"+item.Id.ToString();
+                                    <input type="radio" name="item-loc" id="@rad" title-loc="@item.Id" center-name="@item.Name">
+                                }
+                                <input type="radio" name="item-loc" id="item15" title-loc="Diger">
                             </summary>
                             <ul class="selector-list">
-
-                                <li>
-                                    <label class="selector-label" for="item12">Moska T/M</label>
-                                </li>
-                                <li>
-                                    <label class="selector-label" for="item13">Mərkəzi Univermaq T/M</label>
-                                </li>
-                                <li>
-                                    <label class="selector-label" for="item14">Laçın T/M</label>
-                                </li>
-                                <li>
+                                @foreach (var item in ViewBag.Centers)
+                               {
+                                    string rad = "item"+item.Id.ToString();
+                                    <li>
+                                        <label class="selector-label" for="@rad" itemid="@item.Id">@item.Name</label>
+                                    </li>
+                               }
+                               <li>
                                     <label class="selector-label" for="item15">Diger</label>
                                 </li>
                             </ul>
                         </details>
-
                     </td>
+                    @*DELIVERY*@
                     <td>
                         <details class="custom-select delivery">
                             <summary class="radios">
@@ -268,8 +290,6 @@
                                 <input type="radio" name="item-delivery" id="item23" title-delivery="Yox">
                             </summary>
                             <ul class="selector-list">
-
-
                                 <li>
                                     <label class="selector-label" for="item21">Hamsi</label>
                                 </li>
@@ -282,18 +302,14 @@
 
                             </ul>
                         </details>
-
                     </td>
                     <td>
                         <div class="submit-div">
-                            <button class="filter-sumbit" type="submit">Axtar</button>
+                            <a class="filter-sumbit" type="submit" @*asp-controller="homepage" asp-action="searchproduct"*@>Axtar</a>
                         </div>
-
                     </td>
                 </tr>
             </table>
-
-
         </div>
 
 
@@ -398,103 +414,129 @@
 
     <!-- Index Js-->
     <!--<script src="~/Main/global.js"></script>-->
-
     <!-- Parcalanmish Js-->
+
+    <script src="~/Main/JS files/add-product.js"></script>
+    <script src="~/Main/JS files/advertisement.js"></script>
+    <script src="~/Main/JS files/be-premium.js"></script>
+    <script src="~/Main/JS files/Carousel.js"></script>
+    <script src="~/Main/JS files/diamondCount.js"></script>
     <script src="~/Main/JS files/filterShower.js"></script>
     <script src="~/Main/JS files/hamburgerMenu.js"></script>
-    <script src="~/Main/JS files/Carousel.js"></script>
-    <script src="~/Main/JS files/someDetails.js"></script>
-    <script src="~/Main/JS files/removeEntity.js"></script>
-    <script src="~/Main/JS files/be-premium.js"></script>
-    <script src="~/Main/JS files/productCarousel.js"></script>
     <script src="~/Main/JS files/followUser.js"></script>
+    <script src="~/Main/JS files/productCarousel.js"></script>
+    <script src="~/Main/JS files/removeEntity.js"></script>
+    <script src="~/Main/JS files/someDetails.js"></script>
     <script src="~/Main/JS files/wallet.js"></script>
-    <script src="~/Main/JS files/advertisement.js"></script>
     <script>
 
         document.querySelector('.filter-sumbit').addEventListener("click", function (e) {
-            e.preventDefault()
+            //e.preventDefault()
 
-            var selectedTitle = $("input[name='item-type']:checked").attr('title-type');
+            var categoryId = $("input[name='item-type']:checked").attr('filter-category');
             var selectedDiamond = $("input[name='item-diamond']:checked").attr('title-diamond');
-            var selectedLoc = $("input[name='item-loc']:checked").attr('title-loc');
-            var selectedDelivery = document.querySelector('input[name="item-delivery"]:checked').getAttribute('title-delivery');
-
-            if (selectedTitle === "Nov") {
-                selectedTitle == null;
+            var centerId = $("input[name='item-loc']:checked").attr('title-loc');
+            var selectedDelivery = $('input[name="item-delivery"]:checked').attr('title-delivery');
+            var eyarId = $('input[name="diamond"]:checked').attr('eyarId');
+            var colorId = $('input[name="g-color"]:checked').attr('colorId');
+            if (categoryId == "Nov") {
+                categoryId == null;
             }
 
-            if (selectedLoc === "Ticarət Mərkəzi") {
-                selectedLoc == null;
+            if (centerId == "Ticarət Mərkəzi") {
+                centerId == null;
             }
 
-            var diamondValue = null;
-            if (selectedDiamond === "Var") {
-                diamondValue = true;
-            } else if (selectedDiamond === "Yox") {
-                diamondValue = false;
-            } else if (selectedDiamond === "Brilliant") {
-                diamondValue = null;
+            var hasDiamond = null;
+            if (selectedDiamond == "Var") {
+                hasDiamond = true;
+            } else if (selectedDiamond == "Yox") {
+                hasDiamond = false;
+            } else if (selectedDiamond == "Brilliant") {
+                hasDiamond = null;
             }
 
-            var deliveryValue = null;
-            if (selectedDelivery === "Var") {
-                deliveryValue = true;
-            } else if (selectedDelivery === "Yox") {
-                deliveryValue = false;
-            } else if (selectedDiamond === "Catdirilma") {
-                deliveryValue = null;
+            var hasDelivery = null;
+            if (selectedDelivery == "Var") {
+                hasDelivery = true;
+            } else if (selectedDelivery == "Yox") {
+                hasDelivery = false;
+            } else if (selectedDiamond == "Catdirilma") {
+                hasDelivery = null;
             }
 
-            var selectedColors = [];
-            $('input[name="g-color"]:checked').each(function () {
-                selectedColors.push($(this).next('label').text());
-            });
-            var selectedEyar = [];
-            $('input[name="diamond"]:checked').each(function () {
-                var label = $(this).next('label').text();
-                selectedEyar.push(label.trim());
-            });
+            //var selectedColors = [];
+            //$('input[name="g-color"]:checked').each(function () {
+            //    selectedColors.push($(this).next('label').text());
+            //});
+            //var selectedEyar = [];
+            //$('input[name="diamond"]:checked').each(function () {
+            //    var label = $(this).next('label').text();
+            //    selectedEyar.push(label.trim());
+            //});
             var minWeight = document.querySelector('.w-input_number_min')?.value
             var maxWeight = document.querySelector('.w-input_number_max')?.value
             var minPrice = document.querySelector('.p-input_number_min')?.value
             var maxPrice = document.querySelector('.p-input_number_max')?.value
 
-            console.log(selectedTitle)
-            console.log(selectedDiamond)
-            console.log(selectedLoc)
-            console.log(selectedDelivery)
-            console.log(selectedColors)
-            console.log(selectedEyar)
+            console.log(categoryId)
+            console.log(hasDiamond)
+            console.log(centerId)
+            console.log(eyarId)
+            console.log(colorId)
+            console.log(hasDelivery)
             console.log(minWeight)
             console.log(maxWeight)
             console.log(minPrice)
             console.log(maxPrice)
+            location.href ="https://localhost:44345/homepage/searchproduct?CategoryId="+categoryId+"&hasDiamond="+hasDiamond+"&CenterId="+centerId+"&EyarId="+eyarId+"&ColorId="+colorId+"&hasDelivery="+hasDelivery+"&minWeight="+minWeight+"&maxWeight="+maxWeight+"&minPrice="+minPrice+"&maxPrice="+maxPrice;
+            //$.ajax({
 
-            $.ajax({
-                type: "POST",
-                url: "@Url.Action("searchProduct","HomePage")",
-                data: {
-                    selectedTitle: selectedTitle,
-                    selectedDiamond: diamondValue,
-                    selectedLoc: selectedLoc,
-                    selectedDelivery: deliveryValue,
-                    selectedColors: selectedColors,
-                    selectedEyar: selectedEyar,
-                    minWeight: minWeight,
-                    maxWeight: maxWeight,
-                    minPrice: minPrice,
-                    maxPrice: maxPrice
-                },
-                success: function (result) {
-                    // Handle success response
-                },
-                error: function (xhr, status, error) {
-                    // Handle error response
-                }
-            });
+            //    url: "https:localhost:44345/homepage/searchproduct?CategoryId=1&hasDiamond=true&CenterId=2&EyarId=2&ColorId=3&hasDelivery=false&minWeight=0&maxWeight=199&minPrice=0&maxPrice=100",
+            //    data: {
+            //        CategoryId: categoryId,
+            //        hasDiamond: hasDiamond,
+            //        CenterId: centerId,
+            //        EyarId: eyarId,
+            //        ColorId: colorId,
+            //        hasDelivery: hasDelivery, 
+            //        minWeight: minWeight,
+            //        maxWeight: maxWeight,
+            //        minPrice: minPrice,
+            //        maxPrice: maxPrice
+            //    },
+            //    success: function (result) {
+            //        location.reload(true)
+            //        location.pathname = "homepage/searchProduct"
+            //        location.pathname = "homepage/searchProduct?CategoryId=1&hasDiamond=true&CenterId=2&EyarId=1&ColorId=3&hasDelivery=false&minWeight=0&maxWeight=199&minPrice=0&maxPrice=100"
+
+            //    },
+            //    error: function (xhr, status, error) {
+            //         Handle error response
+            //    }
+            //});
 
         })
+        document.querySelector('.sbx-custom__submit').addEventListener("click", function (e){
+            var searchedtext = document.querySelector('.sbx-custom__input')?.value;
+            console.log(searchedtext);
+            location.href ="https://localhost:44345/homepage/Search?searchedText="+searchedtext;
+        })
+        //$(document).ready(function () {
+        //    var searchedtext = document.querySelector(',sbx-custom__input')?.value;
+        //    }
+        //    $(document).on('click', `.sbx-custom__submit`, function () {
+        //        searchedtext = $(this).val();
+        //        console.log(searchedtext);
+        //        location.href ="https://localhost:44345/homepage/search?searchedtext="+searchedtext;
+        //        //$.ajax({
+        //        //    url: `/HomePage/search?searchedtext=` + searchedtext,
+        //        //    success: function (res) {
+        //        //        $(`#${controller.toLowerCase()}-list`).append(res);
+        //        //    }
+        //        //})
+        //    });
+        //})
     </script>
 </body>
 

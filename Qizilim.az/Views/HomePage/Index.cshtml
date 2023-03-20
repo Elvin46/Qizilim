@@ -6,20 +6,21 @@
 
     <div class="sr-content swiper-wrapper">
 
-        @foreach (var item in Model.QizilimUser)
+        @foreach (var item in Model.QizilimUser.Where(x=>x.isPremium == true))
         {
-<div class="swiper-slide">
-    <div class="brands-carousel-img">
-        <a asp-controller="store" asp-action="storesingle" asp-route-id="@item.Id" style="text-decoration: none;">
-            <img class="sr-img-brand" src="~/Main/images/brands/brnd-2.jpg" alt="">
-            <span class="brands-store-name">@item.shopName</span>
-        </a>
-    </div>
-</div>}
+            <div class="swiper-slide">
+                <div class="brands-carousel-img">
+                    <a asp-controller="store" asp-action="storesingle" asp-route-id="@item.Id" style="text-decoration: none;">
+                        <img class="sr-img-brand" src="~/photouploads/Shopimages/@item.ProfileImg" alt="">
+                        <span class="brands-store-name">@item.shopName</span>
+                    </a>
+                </div>
+            </div>
+        }
 
 
 
-        
+
     </div>
 
     <div class="swiper-button-next"></div>
@@ -29,145 +30,84 @@
 <div class="vip-products-text-area">
     <div class="vip-child-div">
         <div class="vip-text">Premium elanlar</div>
-        <div class="all-vip-btn"><a href="../premium-ads/premium-ads.html"><button class="btn-shw-all-vip">Butun Premium Elanlar</button></a></div>
+        <div class="all-vip-btn"><a asp-controller="homepage" asp-action="vipproduct"><button class="btn-shw-all-vip">Butun Premium Elanlar</button></a></div>
     </div>
-
 </div>
-
-
-
 <div class="praducts">
-    @foreach (var item in Model.Products.OrderByDescending(p => p.IreliCekilmisProduct == true))
+    @foreach (var item in Model.Products.OrderByDescending(p => p.CreatedDate))
     {
-@if (item.PremiumProduct)
-{
-<a asp-controller="Store" asp-action="ProductSingle" asp-route-id="@item.Id" style="text-decoration: none;">
-    <div class="container">
+        @if (item.PremiumProduct)
+        {
+        <a asp-controller="Store" asp-action="ProductSingle" asp-route-id="@item.Id" style="text-decoration: none;">
+            <div class="container">
 
-        <div class="image">
-            <img src="../../Main/images/products/New/4.jpg" alt="">
-        </div>
-        <div class="info">
-
-            <div class="price-vip"><span>@item.Price AZN</span>
-                <i class="fa-solid fa-gem" style="color: #C1957C;"></i>
-            </div>
-
-            <div class="prob-weight-div">
-
-                <div class="prob">
-                    @foreach (var item2 in ViewBag.ProductEyar)
-                    {
-                        if (item2.ProductId == item.Id)
-                        {
-                            foreach (var eyar in ViewBag.Eyar)
-                            {
-
-                                if (item2.EyarId == eyar.Id)
-                                {
-                                    @eyar.EyarOlcusu
-                                }
-                                            }
-                                        }
-                                    }
+                <div class="image">
+                    <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
                 </div>
-                <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
-                @if (item.HasDiamond)
-                {
-                    <div class="carat">@item.CountDiamond ct</div>
-                }
-
+                <div class="info">
+                    <div class="price-vip">
+                        <span>@item.Price AZN</span>
+                        <i class="fa-solid fa-gem" style="color: #C1957C;"></i>
+                    </div>
+                    <div class="prob-weight-div">
+                        <div class="prob">
+                            @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
+                        </div>
+                        <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
+                        @if (item.HasDiamond)
+                        {
+                            <div class="carat">@item.CountDiamond ct</div>
+                        }
+                    </div>
+                    <div class="title-of-product">@item.aboutProduct.HtmlToPlainText().ToEllipse(20)</div>
+                    <div class="time">Bakı, @item.CreatedDate.ToString("MMM d, yyyy")</div>
+                </div>
             </div>
-            <div class="title-of-product">@item.aboutProduct.HtmlToPlainText().ToEllipse(20)</div>
-
-            <div class="time">Bakı, @item.CreatedDate.ToString("MMM d, yyyy")</div>
-        </div>
-    </div>
-</a>}}
-
-
-   
-
-
+        </a>
+        }
+    }
 </div>
-
-
-
-
 <div class="banner">
     <div id="banner" class="banner-shop-page owl-carousel owl-theme">
         @foreach (var item in Model.Advertisement)
-	    {
+        {
             <div class="banner-div">
                 <img class="banner-area" src="~/photouploads/images/@item.Image" alt="">
             </div>
-	    }
-        
-        
+        }
+
+
     </div>
 </div>
-
 <div class="vip-products-text-area">
     <div class="vip-child-div">
         <div class="vip-text">Son elanlar</div>
     </div>
 </div>
-
-
 <div class="praducts last-announ-container">
-    @foreach (var item in Model.Products.OrderByDescending(p => p.IreliCekilmisProduct == true))
-    {
-        if (item.PremiumProduct)
-        {
-            continue;
-        }
-        else
-        {
-            <a asp-controller="Store" asp-action="ProductSingle" asp-route-id="@item.Id" style="text-decoration: none;">
-                <div class="container">
+    @foreach (var item in Model.Products.OrderByDescending(p => p.CreatedDate))
+    { 
+        <a asp-controller="Store" asp-action="ProductSingle" asp-route-id="@item.Id" style="text-decoration: none;">
+            <div class="container">
+                <div class="image">
 
-                    <div class="image">
-                        <img src="../../Main/images/products/New/4.jpg" alt="">
-                    </div>
-                    <div class="info">
-
-                        <div class="price-vip"><span>@item.Price AZN</span></div>
-
-                        <div class="prob-weight-div">
-
-                            <div class="prob">
-                                @foreach (var item2 in ViewBag.ProductEyar)
-                                {
-                                    if (item2.ProductId == item.Id)
-                                    {
-                                        foreach (var eyar in ViewBag.Eyar)
-                                        {
-
-                                            if (item2.EyarId == eyar.Id)
-                                            {
-            @eyar.EyarOlcusu}
-    }
-}
-}
-
-                            </div>
-                            <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
-                            @if (item.HasDiamond)
-                            {
-        <div class="carat">@item.CountDiamond ct</div>}
-
-                        </div>
-                        <div class="title-of-product">@item.aboutProduct.HtmlToPlainText().ToEllipse(20)</div>
-
-                        <div class="time">Bakı, @item.CreatedDate.ToString("MMM d, yyyy")</div>
-                    </div>
+                    <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
                 </div>
-            </a>
-        }
-
-
-
+                <div class="info">
+                    <div class="price-vip"><span>@item.Price AZN</span></div>
+                    <div class="prob-weight-div">
+                        <div class="prob">
+                            @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
+                        </div>
+                        <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
+                        @if (item.HasDiamond)
+                        {<div class="carat">@item.CountDiamond ct</div>}
+                    </div>
+                    <div class="title-of-product">@item.Name.HtmlToPlainText().ToEllipse(20)</div>
+                    <div class="time">Bakı, @item.CreatedDate.ToString("MMM d, yyyy")</div>
+                </div>
+            </div>
+        </a>
     }
-
 </div>
 
