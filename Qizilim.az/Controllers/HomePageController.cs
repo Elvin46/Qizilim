@@ -43,7 +43,13 @@ namespace Qizilim.az.Controllers
             ViewBag.Categories = categories;
             ViewBag.Eyars = eyars;
             ViewBag.Centers = centers;
-            var products = await db.Products.Where(x => x.DeletedById == null).ToListAsync();
+            var products = await db.Products.Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
             foreach (var item in products)
             {
                 if (item.PremiumProduct)
@@ -73,6 +79,433 @@ namespace Qizilim.az.Controllers
 
 
 
+            var model = new MainViewModel();
+            model.Products = await db.Products
+                .Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            model.QizilimUser = db.Users
+               .Where(cp => cp.shopName != null).ToList();
+            model.Advertisement = db.Advertisement
+                .Where(cp => cp.DeletedById == null).ToList();
+            model.Centers = centers;
+
+            return View(model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> AboutUs()
+        {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            var products = await db.Products.Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            foreach (var item in products)
+            {
+                if (item.PremiumProduct)
+                {
+                    if (item.PremiumEndDate <= DateTime.UtcNow.AddHours(4))
+                    {
+                        item.PremiumProduct = false;
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+            if (User.Identity.Name != null)
+            {
+                var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
+                ViewBag.User = userAbout;
+
+                if (userAbout.Status == null)
+                {
+                    return RedirectToAction("verifyRegister", "account");
+                }
+                else if (userAbout.Status == false)
+                {
+                    return RedirectToAction("rejectedRegister", "account");
+                }
+            }
+            var model = new MainViewModel();
+            model.Products = await db.Products
+                .Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            model.QizilimUser = db.Users
+               .Where(cp => cp.shopName != null).ToList();
+            model.Advertisement = db.Advertisement
+                .Where(cp => cp.DeletedById == null).ToList();
+            model.Centers = centers;
+
+            return View(model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> Questions()
+        {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            var products = await db.Products.Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            foreach (var item in products)
+            {
+                if (item.PremiumProduct)
+                {
+                    if (item.PremiumEndDate <= DateTime.UtcNow.AddHours(4))
+                    {
+                        item.PremiumProduct = false;
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+            if (User.Identity.Name != null)
+            {
+                var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
+                ViewBag.User = userAbout;
+
+                if (userAbout.Status == null)
+                {
+                    return RedirectToAction("verifyRegister", "account");
+                }
+                else if (userAbout.Status == false)
+                {
+                    return RedirectToAction("rejectedRegister", "account");
+                }
+            }
+            var model = new MainViewModel();
+            model.Products = await db.Products
+                .Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            model.QizilimUser = db.Users
+               .Where(cp => cp.shopName != null).ToList();
+            model.Advertisement = db.Advertisement
+                .Where(cp => cp.DeletedById == null).ToList();
+            model.Centers = centers;
+
+            return View(model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> Rules()
+        {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            var products = await db.Products.Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            foreach (var item in products)
+            {
+                if (item.PremiumProduct)
+                {
+                    if (item.PremiumEndDate <= DateTime.UtcNow.AddHours(4))
+                    {
+                        item.PremiumProduct = false;
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+            if (User.Identity.Name != null)
+            {
+                var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
+                ViewBag.User = userAbout;
+
+                if (userAbout.Status == null)
+                {
+                    return RedirectToAction("verifyRegister", "account");
+                }
+                else if (userAbout.Status == false)
+                {
+                    return RedirectToAction("rejectedRegister", "account");
+                }
+            }
+            var model = new MainViewModel();
+            model.Products = await db.Products
+                .Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            model.QizilimUser = db.Users
+               .Where(cp => cp.shopName != null).ToList();
+            model.Advertisement = db.Advertisement
+                .Where(cp => cp.DeletedById == null).ToList();
+            model.Centers = centers;
+
+            return View(model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> Privacy()
+        {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            var products = await db.Products.Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            foreach (var item in products)
+            {
+                if (item.PremiumProduct)
+                {
+                    if (item.PremiumEndDate <= DateTime.UtcNow.AddHours(4))
+                    {
+                        item.PremiumProduct = false;
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+            if (User.Identity.Name != null)
+            {
+                var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
+                ViewBag.User = userAbout;
+
+                if (userAbout.Status == null)
+                {
+                    return RedirectToAction("verifyRegister", "account");
+                }
+                else if (userAbout.Status == false)
+                {
+                    return RedirectToAction("rejectedRegister", "account");
+                }
+            }
+            var model = new MainViewModel();
+            model.Products = await db.Products
+                .Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            model.QizilimUser = db.Users
+               .Where(cp => cp.shopName != null).ToList();
+            model.Advertisement = db.Advertisement
+                .Where(cp => cp.DeletedById == null).ToList();
+            model.Centers = centers;
+
+            return View(model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> Cookies()
+        {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            var products = await db.Products.Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            foreach (var item in products)
+            {
+                if (item.PremiumProduct)
+                {
+                    if (item.PremiumEndDate <= DateTime.UtcNow.AddHours(4))
+                    {
+                        item.PremiumProduct = false;
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+            if (User.Identity.Name != null)
+            {
+                var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
+                ViewBag.User = userAbout;
+
+                if (userAbout.Status == null)
+                {
+                    return RedirectToAction("verifyRegister", "account");
+                }
+                else if (userAbout.Status == false)
+                {
+                    return RedirectToAction("rejectedRegister", "account");
+                }
+            }
+            var model = new MainViewModel();
+            model.Products = await db.Products
+                .Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            model.QizilimUser = db.Users
+               .Where(cp => cp.shopName != null).ToList();
+            model.Advertisement = db.Advertisement
+                .Where(cp => cp.DeletedById == null).ToList();
+            model.Centers = centers;
+
+            return View(model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> Services()
+        {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            var products = await db.Products.Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            foreach (var item in products)
+            {
+                if (item.PremiumProduct)
+                {
+                    if (item.PremiumEndDate <= DateTime.UtcNow.AddHours(4))
+                    {
+                        item.PremiumProduct = false;
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+            if (User.Identity.Name != null)
+            {
+                var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
+                ViewBag.User = userAbout;
+
+                if (userAbout.Status == null)
+                {
+                    return RedirectToAction("verifyRegister", "account");
+                }
+                else if (userAbout.Status == false)
+                {
+                    return RedirectToAction("rejectedRegister", "account");
+                }
+            }
+            var model = new MainViewModel();
+            model.Products = await db.Products
+                .Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            model.QizilimUser = db.Users
+               .Where(cp => cp.shopName != null).ToList();
+            model.Advertisement = db.Advertisement
+                .Where(cp => cp.DeletedById == null).ToList();
+            model.Centers = centers;
+
+            return View(model);
+        }
+        [AllowAnonymous]
+        public async Task<IActionResult> Offers()
+        {
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
+            var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
+            var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();
+            var centers = await db.Centers.Where(x => x.DeletedById == null).ToListAsync();
+            ViewBag.Colors = colors;
+            ViewBag.Categories = categories;
+            ViewBag.Eyars = eyars;
+            ViewBag.Centers = centers;
+            var products = await db.Products.Where(cp => cp.DeletedById == null)
+                .Include(cp => cp.ProductImages)
+                .ThenInclude(cp => cp.Image)
+                .Include(cp => cp.ProductEyar)
+                .ThenInclude(cp => cp.Eyar)
+                .Include(cp => cp.ProductColor)
+                .ThenInclude(cp => cp.Color).Take(16).ToListAsync();
+            foreach (var item in products)
+            {
+                if (item.PremiumProduct)
+                {
+                    if (item.PremiumEndDate <= DateTime.UtcNow.AddHours(4))
+                    {
+                        item.PremiumProduct = false;
+                        await db.SaveChangesAsync();
+                    }
+                }
+            }
+            if (User.Identity.Name != null)
+            {
+                var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
+                ViewBag.User = userAbout;
+
+                if (userAbout.Status == null)
+                {
+                    return RedirectToAction("verifyRegister", "account");
+                }
+                else if (userAbout.Status == false)
+                {
+                    return RedirectToAction("rejectedRegister", "account");
+                }
+            }
             var model = new MainViewModel();
             model.Products = await db.Products
                 .Where(cp => cp.DeletedById == null)

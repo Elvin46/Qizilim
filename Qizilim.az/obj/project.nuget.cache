@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Q34BngdU9sUS9BLo8pvgfpWop5iGQ3uEdgiZSpeYJ/Oe2lYs1lTNq+7X47qwhMAHfhVq35ErCCmWExfwfNV3+Q==",
+  "dgSpecHash": "jL0b3kuyNdhAUde/etaC43fQ7FFQrdojKA5Qtlk3iQFcjKwFl69Dlb1drKaSQa4UmoSnCAzDW1AtTfQGHTQzdw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\HP\\Desktop\\Qizilim_son\\Qizilim.az\\Qizilim.az.csproj",
+  "projectFilePath": "C:\\Users\\HP\\Desktop\\Qizilim\\Qizilim.az\\Qizilim.az.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\HP\\.nuget\\packages\\humanizer.core\\2.8.26\\humanizer.core.2.8.26.nupkg.sha512",
     "C:\\Users\\HP\\.nuget\\packages\\mailkit\\3.5.0\\mailkit.3.5.0.nupkg.sha512",

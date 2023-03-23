@@ -1,4 +1,3 @@
-const { log } = require("../../admin/assets/plugins/fullcalendar/js/fullcalendar");
 
 const imageInput = document.getElementById("images");
 const mainFile = document.querySelector("main_file");
@@ -17,14 +16,19 @@ imageInput.addEventListener('change', (e) => {
         button.setAttribute("id", `${num}`)
         num++;
         button.type = "button";
+        button.onclick = function () {
+            console.log("salam");
+            mainFile.innerHTML = imageInput.files[j].name;
+            mainFile.value = imageInput.files[j].name;
+        };
         const image = document.createElement("img");
         const reader = new FileReader();
         reader.addEventListener("load", () => {
             image.src = reader.result;
-            div.appendChild(image)
-            div.appendChild(button)
+            div.appendChild(image);
+            div.appendChild(button);
             addImgContainer.appendChild(div);
-
+            console.log("salam");
         });
         reader.readAsDataURL(e.target.files[index]);
 
@@ -36,10 +40,9 @@ for (var i = 0; i < ortukEt; i++) {
     ortukEt[i].addEventListener('click', (e) => {
         for (var j = 0; j < 50; i++) {
             if (ortukEt.id == j) {
-                console.log(imageInput.files[j]);
-                mainFile.innerHTML = imageInput.files[j].name;
-                mainFile.value = imageInput.files[j].name;
+                
             }
         }
     })
 }
+

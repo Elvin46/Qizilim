@@ -390,24 +390,6 @@ namespace Qizilim.az.Controllers
 
                     if (result > 0)
                     {
-                        if (model.MainPhoto == images.FileName)
-                        {
-                            await db.ProductImage.AddAsync(new ProductImage
-                            {
-                                ProductId = product.Id,
-                                ImageId = mainClassImg.Id,
-                                IsMain = true
-                            });
-                        }
-                        else
-                        {
-                            await db.ProductImage.AddAsync(new ProductImage
-                            {
-                                ProductId = product.Id,
-                                ImageId = mainClassImg.Id,
-                                IsMain = false
-                            });
-                        }
                         if (model.MainPhoto == null)
                         {
                             if (count == 1)
@@ -429,6 +411,29 @@ namespace Qizilim.az.Controllers
                                 });
                             }
                         }
+                        else
+                        {
+                            if (model.MainPhoto == images.FileName)
+                            {
+                                await db.ProductImage.AddAsync(new ProductImage
+                                {
+                                    ProductId = product.Id,
+                                    ImageId = mainClassImg.Id,
+                                    IsMain = true
+                                });
+                            }
+                            else
+                            {
+                                await db.ProductImage.AddAsync(new ProductImage
+                                {
+                                    ProductId = product.Id,
+                                    ImageId = mainClassImg.Id,
+                                    IsMain = false
+                                });
+                            }
+                        }
+                        
+                        
                         
                         await db.SaveChangesAsync();
                     }
