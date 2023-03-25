@@ -16,7 +16,7 @@ namespace Qizilim.az.Models.FormModels
         public string? instagramLink { get; set; }
         public string? tiktokLink { get; set; }
         public double? whatsappNumber { get; set; }
-        public string? shopLocation { get; set; }
+        public int CenterId { get; set; }
         public bool catdirilma { get; set; }
         public string ProfileImg { get; set; }
         public IFormFile file { get; set; }

@@ -88,6 +88,23 @@
                         <span asp-validation-for="file" class="text-danger"></span>
                     </div>
                     <div class="input-field">
+                        <label asp-for="CenterId">Center</label>
+                        <select class="form-control" name="CenterId">
+                            <option value="0">--Select Center--</option>
+                            @foreach (var item in ViewBag.Centers)
+                            {
+                                if (item.Id == Model.CenterId)
+                                {
+                                    <option value="@item.Id" selected>@item.Name</option>
+                                }
+                                else
+                                {
+                                    <option value="@item.Id">@item.Name</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                    <div class="input-field">
                         <label asp-for="shopName" for="storeName">Magaza adi : </label>
                         <input asp-for="shopName" class="input-are" style="border: 1px solid #C1957C; border-radius: 10px;" name="shopName" type="text">
                     </div>

@@ -187,11 +187,11 @@ namespace Qizilim.az.Controllers
 
             var userAbout = await db.Users.Where(u => u.Id == id).FirstOrDefaultAsync();
             ViewBag.userAbout = userAbout;
-
+            var center = await db.Centers.Where(x => x.Name == entity.shopLocation).FirstOrDefaultAsync();
             var model = new editAccountViewModel();
             model.Email = entity.Email;
             model.aboutShop = entity.aboutShop;
-            model.shopLocation = entity.shopLocation;
+            model.CenterId = center.Id;
             model.shopName = entity.shopName;
             model.shopNumber = entity.shopNumber;
             model.instagramLink = entity.instagramLink;
@@ -217,57 +217,54 @@ namespace Qizilim.az.Controllers
             ViewBag.Centers = centers;
             var entity = await db.Users.Where(u => u.Id == model.Id).FirstOrDefaultAsync();
 
-
-            if (model?.file == null)
-            {
-                ctx.AddModelError("ProfileImg", "Fayl Sechilmeyib!");
-            }
-
             if (ctx.ModelIsValid())
             {
-                if (entity.ProfileImg == null)
+                if (model.file!=null)
                 {
-                    string fileExtension = Path.GetExtension(model.file.FileName);
-
-                    string name = $"shop-{Guid.NewGuid()}{fileExtension}";
-                    string physicalPath = Path.Combine(env.ContentRootPath, "wwwroot", "photouploads", "Shopimages", name);
-
-                    using (FileStream fs = new FileStream(physicalPath, FileMode.Create, FileAccess.Write))
+                    if (entity.ProfileImg == null)
                     {
-                        await model.file.CopyToAsync(fs);
+                        string fileExtension = Path.GetExtension(model.file.FileName);
+
+                        string name = $"shop-{Guid.NewGuid()}{fileExtension}";
+                        string physicalPath = Path.Combine(env.ContentRootPath, "wwwroot", "photouploads", "Shopimages", name);
+
+                        using (FileStream fs = new FileStream(physicalPath, FileMode.Create, FileAccess.Write))
+                        {
+                            await model.file.CopyToAsync(fs);
+                        }
+                        entity.ProfileImg = name;
                     }
-                    entity.ProfileImg = name;
+                    else if (entity.ProfileImg != null)
+                    {
+                        string OldFileName = entity.ProfileImg;
+
+                        string fileExtension = Path.GetExtension(model.file.FileName);
+
+                        string name = $"shop-{Guid.NewGuid()}{fileExtension}";
+                        string physicalPath = Path.Combine(env.ContentRootPath, "wwwroot", "photouploads", "Shopimages", name);
+
+                        using (var fs = new FileStream(physicalPath, FileMode.Create, FileAccess.Write))
+                        {
+                            await model.file.CopyToAsync(fs);
+                        }
+                        entity.ProfileImg = name;
+
+                        string physicalPathOld = Path.Combine(env.ContentRootPath, "wwwroot", "photouploads", "Shopimages", OldFileName);
+
+                        if (System.IO.File.Exists(physicalPathOld))
+                        {
+                            System.IO.File.Delete(physicalPathOld);
+                        }
+                    }
                 }
-                else if (entity.ProfileImg != null)
-                {
-                    string OldFileName = entity.ProfileImg;
-
-                    string fileExtension = Path.GetExtension(model.file.FileName);
-
-                    string name = $"shop-{Guid.NewGuid()}{fileExtension}";
-                    string physicalPath = Path.Combine(env.ContentRootPath, "wwwroot", "photouploads", "Shopimages", name);
-
-                    using (var fs = new FileStream(physicalPath, FileMode.Create, FileAccess.Write))
-                    {
-                        await model.file.CopyToAsync(fs);
-                    }
-                    entity.ProfileImg = name;
-
-                    string physicalPathOld = Path.Combine(env.ContentRootPath, "wwwroot", "photouploads", "Shopimages", OldFileName);
-
-                    if (System.IO.File.Exists(physicalPathOld))
-                    {
-                        System.IO.File.Delete(physicalPathOld);
-                    }
-                }
+                var center = await db.Centers.Where(x => x.Id == model.CenterId).FirstOrDefaultAsync();
 
                 entity.shopName = model.shopName;
-                entity.Email = model.Email;
                 entity.aboutShop = model.aboutShop;
                 entity.instagramLink = model.instagramLink;
                 entity.tiktokLink = model.tiktokLink;
                 entity.whatsappNumber = model.whatsappNumber;
-                entity.shopLocation = model.shopLocation;
+                entity.shopLocation = center.Name;
                 entity.catdirilma = model.catdirilma;
                 await db.SaveChangesAsync();
                 return RedirectToAction("myStore", "Account");

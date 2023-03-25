@@ -94,10 +94,10 @@ namespace Qizilim.az.Controllers
                 oldCodes.Add(verificationCode);
                 var mail = new MimeMessage();
 
-                mail.From.Add(new MailboxAddress("EduHome", "codep320@gmail.com"));
+                mail.From.Add(new MailboxAddress("Qizilim.Az", "qizilim.verify@gmail.com"));
                 mail.To.Add(new MailboxAddress(user.Name, user.Email));
 
-                mail.Subject = "Verify EduHome Account";
+                mail.Subject = "Welcome to Qizilim.az";
                 var bodyBuilder = new BodyBuilder();
                 bodyBuilder.HtmlBody = $"<h2>Your verification code:\"{verificationCode}\"</h2>";
                 bodyBuilder.TextBody = "This is some plain text";
@@ -108,7 +108,7 @@ namespace Qizilim.az.Controllers
                     smtp.Connect("smtp.gmail.com", 587, false);
 
                     // Note: only needed if the SMTP server requires authentication
-                    smtp.Authenticate("elvinva@code.edu.az", "Elvin2003");
+                    smtp.Authenticate("qizilim.verify@gmail.com", "Haci9509");
 
                     smtp.Send(mail);
                     smtp.Disconnect(true);
@@ -135,6 +135,11 @@ namespace Qizilim.az.Controllers
                 if (registerVM.ShopName == null)
                 {
                     ModelState.AddModelError("ShopName", "Magaza adi daxil edilmemisdir");
+                    return View();
+                }
+                if (registerVM.CenterId == null)
+                {
+                    ModelState.AddModelError("CenterId", "Magazanin Yerlediyi Univermaq daxil edilmemisdir");
                     return View();
                 }
                 if (registerVM.ShopNumber == null)
@@ -168,10 +173,10 @@ namespace Qizilim.az.Controllers
                 oldCodes.Add(verificationCode);
                 var mail = new MimeMessage();
 
-                mail.From.Add(new MailboxAddress("EduHome", "codep320@gmail.com"));
-                mail.To.Add(new MailboxAddress(registerVM.Name, registerVM.Email));
+                mail.From.Add(new MailboxAddress("Qizilim.Az", "qizilim.verify@gmail.com"));
+                mail.To.Add(new MailboxAddress(user.Name, user.Email));
 
-                mail.Subject = "Verify EduHome Account";
+                mail.Subject = "Welcome to Qizilim.az";
                 var bodyBuilder = new BodyBuilder();
                 bodyBuilder.HtmlBody = $"<h2>Your verification code:\"{verificationCode}\"</h2>";
                 bodyBuilder.TextBody = "This is some plain text";
@@ -182,7 +187,7 @@ namespace Qizilim.az.Controllers
                     smtp.Connect("smtp.gmail.com", 587, false);
 
                     // Note: only needed if the SMTP server requires authentication
-                    smtp.Authenticate("elvinva@code.edu.az", "Elvin2003");
+                    smtp.Authenticate("qizilim.verify@gmail.com", "pzodlakuwuijkhqm");
 
                     smtp.Send(mail);
                     smtp.Disconnect(true);
