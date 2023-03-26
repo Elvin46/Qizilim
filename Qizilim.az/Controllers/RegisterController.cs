@@ -108,7 +108,7 @@ namespace Qizilim.az.Controllers
                     smtp.Connect("smtp.gmail.com", 587, false);
 
                     // Note: only needed if the SMTP server requires authentication
-                    smtp.Authenticate("qizilim.verify@gmail.com", "Haci9509");
+                    smtp.Authenticate("qizilim.verify@gmail.com", "pzodlakuwuijkhqm");
 
                     smtp.Send(mail);
                     smtp.Disconnect(true);
