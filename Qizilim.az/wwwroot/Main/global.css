@@ -1528,6 +1528,8 @@ input[type=number] {
 #be-delete{
   border: 2px solid #FF0000;
   /* background-color: #ff00003f; */
+  text-decoration: none;
+  color:black;
 
 }
 .premium-popup{

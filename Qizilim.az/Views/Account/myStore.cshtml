@@ -18,23 +18,18 @@
                         <img class="banner-area" src="~/photouploads/images/@item.Image" alt="">
                     </div>
                 }
-
-
             </div>
         </div>
         <div class="shop-details-main-div">
             <div class="shop-details-img-follow-div">
                 <div class="shop-img-div">
                     <div class="shop-img">
-
                         <img class="shop-page-img" src="~/photouploads/ShopImages/@ViewBag.User.ProfileImg" alt="">
                     </div>
                     <div class="add-new-button-div">
                         <a asp-controller="account" asp-action="addProduct">
                             <div class="add-new-button-buton" id="follow-button">
                                 <div id="follow-button-svg-div">
-
-
                                 </div>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-square" viewBox="0 0 16 16" style="margin-right:3px;">
                                     <path d="M14 1a1 1 0 0 1 1 1v12a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1V2a1 1 0 0 1 1-1h12zM2 0a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V2a2 2 0 0 0-2-2H2z" />
@@ -42,10 +37,8 @@
                                 </svg>Yeni elan
                             </div>
                         </a>
-
                     </div>
                     <a class="edit-user-bttn" asp-route-id="@ViewBag.User.Id"  asp-controller="account" asp-action="editShopAccount">
-
                         <button type="button" class="css-button shop-edit-button">
                             <span class="css-button-icon">
                                 <i class="fa fa-pencil"></i>
@@ -70,7 +63,6 @@
                         <span>@ViewBag.User.aboutShop</span>
                     </div>
                 </div>
-
             </div>
             <div class="shop-contact-details-div">
                 <div class="shop-contact-loaction">
@@ -117,65 +109,63 @@
                             </a>
                         </li>
                     </ul>
-
-
                 </div>
             </div>
         </div>
-
-
-
         <div class="premium-products-shop">
-            <div class="vip-child-div">
-                <div class="vip-text-premium-shop">Mağazanın premium elanlar</div>
-                <!-- <div class="all-vip-btn"><button class="btn-shw-all-vip">Butun Vip Elanlar</button></div> -->
-            </div>
-            <div class="praducts">
-                @foreach (var item in Model.Products.OrderByDescending(p=>p.IreliCekilmisProduct == true))
-                {
-            @if (item.PremiumProduct)
+            @{int premiumCount = 0;}
+            @foreach (var item in Model.Products.OrderByDescending(p=>p.CreatedDate))
             {
-            <a asp-controller="Store" asp-action="ProductSingle" asp-route-id="@item.Id" style="text-decoration: none;">
-                <div class="container">
-
-                    <div class="image">
-                        <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
-                    </div>
-                    <div class="info">
-
-                        <div class="price-vip"><span>@item.Price AZN</span><i class="fa-solid fa-gem" style="color: #C1957C;"></i></div>
-
-                        <div class="prob-weight-div">
-
-                            <div class="prob">
-                                @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
-                            </div>
-                            <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
-                            @if (item.HasDiamond)
-                            {
-            <div class="carat">@item.CountDiamond ct</div>                        }
-
-                        </div>
-                        <div class="title-of-product">@item.aboutProduct.HtmlToPlainText().ToEllipse(20)</div>
-
-                        <div class="time">Bakı, @item.CreatedDate.ToString("MMM d, yyyy")</div>
-                    </div>
+                @if (item.PremiumProduct)
+                {
+                    premiumCount++;
+                }
+            }
+            @if (premiumCount != 0)
+            {
+                <div class="vip-child-div">
+                    <div class="vip-text-premium-shop">Mağazanın premium elanlar</div>
                 </div>
-            </a>}}
+            }
+            <div class="praducts">
+                @foreach (var item in Model.Products.OrderByDescending(p=>p.CreatedDate))
+                {
+                    @if (item.PremiumProduct)
+                    {
+                        <a asp-controller="Store" asp-action="ProductSingle" asp-route-id="@item.Id" style="text-decoration: none;">
+                            <div class="container">
+                                <div class="image">
+                                    <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
+                                </div>
+                                <div class="info">
+                                    <div class="price-vip"><span>@item.Price AZN</span><i class="fa-solid fa-gem" style="color: #C1957C;"></i></div>
+                                    <div class="prob-weight-div">
+                                        <div class="prob">
+                                            @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
+                                        </div>
+                                        <div class="weight">@item.Weight gr</div>
+                                            <span class="sep-w-c">/</span>
+                                            @if (item.HasDiamond)
+                                            {
+                                                <div class="carat">@item.CountDiamond ct</div>
+                                            }
+                                        </div>
+                                    <div class="title-of-product">@item.aboutProduct.HtmlToPlainText().ToEllipse(20)</div>
 
-
+                                    <div class="time">Bakı, @item.CreatedDate.ToString("MMM d, yyyy")</div>
+                                </div>
+                            </div>
+                        </a>
+                    }
+                }
             </div>
-
         </div>
-
         <div class="vip-products-text-area">
             <div class="vip-child-div">
                 <div class="vip-text">Mağazanın elanları</div>
                 <div class="all-vip-btn"><button class="btn-shw-all-vip">Butun Vip Elanlar</button></div>
             </div>
-
         </div>
-
         <div class="praducts">
             @foreach (var item in Model.Products.OrderByDescending(x=>x.CreatedDate))
             {
@@ -186,33 +176,24 @@
                                 <img src="~/photouploads/ProductImages/@item.ProductImages.FirstOrDefault(x=>x.IsMain==true).Image.Path" alt="">
                             </div>
                             <div class="info">
-
-                                <div class="price-vip"><span>@item.Price AZN</span>
-                                
+                                <div class="price-vip">
+                                    <span>@item.Price AZN</span>
                                 </div>
-
                                 <div class="prob-weight-div">
-
                                     <div class="prob">
                                         @item.ProductEyar.FirstOrDefault().Eyar.EyarOlcusu
                                     </div>
-                                    <div class="weight">@item.Weight gr</div><span class="sep-w-c">/</span>
+                                    <div class="weight">@item.Weight gr</div>
+                                    <span class="sep-w-c">/</span>
                                     @if (item.HasDiamond)
-                                    {
-            <div class="carat">@item.CountDiamond ct</div>}
-
+                                    {<div class="carat">@item.CountDiamond ct</div>}
                                 </div>
                                 <div class="title-of-product">@item.aboutProduct.HtmlToPlainText().ToEllipse(20)</div>
-
                                 <div class="time">Bakı, @item.CreatedDate.ToString("MMM d, yyyy")</div>
                             </div>
                         </div>
-                    </a>
-                
-                    
-                
+                    </a> 
             }
-
         </div>
     }
     else
@@ -247,11 +228,6 @@
                     </div>
                     <div class="follower-counter-div">
                         <a asp-controller="homepage" asp-action="liked" class="following-page"><span class="follower-counter-span" id="follower-counter">Beyendiklerim</span>
-                        
-                        
-                        
-                        
-                        
                             @{ 
                                 var count = 0;
                             }
@@ -267,11 +243,6 @@
                             {
                                 @count
                             }
-
-
-
-
-
                         </a>
                     </div>
                     <div class="editprofile">
@@ -287,30 +258,21 @@
                             </button>
 
                         </a>
-
                     </div>
-
                 </div>
             </div>
-
-
         </div>
-
-
-
         <div class="my-premium-products-shop">
             <div class="vip-products-text-area">
                 <div class="vip-child-div">
                     <div class="vip-text">Izlediyim Magazalar<span class="count-myshops">(<a asp-controller="Store" asp-action="Stores">77</a>)</span></div>
                     <!-- <div class="all-vip-btn"><button class="btn-shw-all-vip">Butun Vip Elanlar</button></div> -->
                 </div>
-
             </div>
             <div class="shops-content-area">
-
                 <div class="my-shops-content-area-div ">
-                @if (Model.Shops == null)
-                {
+                    @if (Model.Shops == null)
+                    {
                         <h2>Izlediyiniz magaza yoxdur</h2>
 
                     }
@@ -345,21 +307,15 @@
                             </a>
                         }
                     }
-                    
-
                 </div>
             </div>
-
         </div>
-
         <div class="vip-products-text-area">
             <div class="vip-child-div">
                 <div class="vip-text">Son elanlar</div>
                 <!-- <div class="all-vip-btn"><button class="btn-shw-all-vip">Butun Vip Elanlar</button></div> -->
             </div>
-
         </div>
-
         <div class="praducts">
             @foreach (var item in Model.Products)
             {
@@ -392,7 +348,6 @@
                     </div>
                 </a>
             }
-
         </div>
     }
 }

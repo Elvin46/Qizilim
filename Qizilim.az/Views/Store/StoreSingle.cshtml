@@ -1,34 +1,9 @@
 ﻿@model MainViewModel
-
-
 @{ Layout = "_LayoutStore"; }
-
-
-
-
-
-
-<div class="banner">
-    <div id="banner" class="banner-shop-page owl-carousel owl-theme">
-        @foreach (var item in Model.QizilimUser)
-        {
-            <div class="swiper-slide">
-                <div class="brands-carousel-img">
-                    <a asp-controller="store" asp-action="storesingle" asp-route-id="@item.Id" style="text-decoration: none;">
-                        <img class="sr-img-brand" src="~/photouploads/Shopimages/@item.ProfileImg" alt="">
-                        <span class="brands-store-name">@item.shopName</span>
-                    </a>
-                </div>
-            </div>
-        }
-
-    </div>
-</div>
 <div class="shop-details-main-div">
     <div class="shop-details-img-follow-div">
         <div class="shop-img-div">
             <div class="shop-img">
-
                 <img class="shop-page-img" src="~/photouploads/ShopImages/@ViewBag.Shop.ProfileImg" alt="">
             </div>
             @if (User.Identity.Name != null && User.IsInRole("User") && ViewBag.Follow == false)
@@ -88,32 +63,36 @@
                     <a href="#">
                         <img class="shop-list-li-img" src="../../Main/images/asist-imgs/phone.png" alt="">
                         @ViewBag.Shop.PhoneNumber
-
-
                     </a>
                 </li>
-
-                <li class="shop-page-contacts-li">
-                    <a href="#">
-                        <img class="shop-list-li-img" src="../../Main/images/asist-imgs/whatsapp-svgrepo-com.svg" alt="">
-                        @ViewBag.Shop.whatsappNumber
-
-                    </a>
-                </li>
-
-                <li class="shop-page-contacts-li">
-                    <a href="#">
-                        <img class="shop-list-li-img" src="../../Main/images/asist-imgs/instagram-svgrepo-com.svg" alt="">
-                        @ViewBag.Shop.instagramLink
-                    </a>
-                </li>
-
-                <li class="shop-page-contacts-li">
-                    <a href="#">
-                        <img class="shop-list-li-img" src="../../Main/images/asist-imgs/tiktok-icon-white-1-logo-svgrepo-com.svg" alt="">
-                        @ViewBag.Shop.tiktokLink
-                    </a>
-                </li>
+                @if (ViewBag.Shop.whatsappNumber != null)
+                {
+                    <li class="shop-page-contacts-li">
+                        <a href="https://wa.me/@ViewBag.Shop.whatsappNumber">
+                            <img class="shop-list-li-img" src="../../Main/images/asist-imgs/whatsapp-svgrepo-com.svg" alt="">
+                            @ViewBag.Shop.whatsappNumber
+                        </a>
+                    </li>
+                }
+                @if (ViewBag.Shop.instagramLink != null)
+                {
+                    <li class="shop-page-contacts-li">
+                        <a href="https://www.instagram.com/@ViewBag.Shop.instagramLink">
+                            <img class="shop-list-li-img" src="../../Main/images/asist-imgs/instagram-svgrepo-com.svg" alt="">
+                            @ViewBag.Shop.instagramLink
+                        </a>
+                    </li>  
+                }
+                @if (ViewBag.Shop.tiktokLink != null)
+                {
+                    <li class="shop-page-contacts-li">
+                        <a href="https://www.tiktok.com/@ViewBag.Shop.tiktokLink">
+                            <img class="shop-list-li-img" src="../../Main/images/asist-imgs/tiktok-icon-white-1-logo-svgrepo-com.svg" alt="">
+                            @ViewBag.Shop.tiktokLink
+                        </a>
+                    </li>
+                }
+                
             </ul>
 
 

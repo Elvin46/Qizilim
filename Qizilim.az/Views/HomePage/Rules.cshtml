@@ -1,6 +1,6 @@
 ﻿@model MainViewModel
 @{
-    ViewData["Title"] = "Rules";
+    ViewData["Title"] = "AboutUs";
 }
 
 <div class="aboutus-content">
@@ -11,43 +11,41 @@
               <tr >
                   <td>
   
-                      <li><a href="../faq/faq.html">Ən çox verilən suallar</a></li>
+                      <li><a asp-controller="HomePage" asp-action="Questions">Ən çox verilən suallar</a></li>
                   </td>
               </tr>
               <tr class="selected">
                   <td>
-  
-                      <li><a href="../rules/rules.html">Qaydalar</a></li>
+                      <li><a asp-controller="HomePage" asp-action="Rules">Qaydalar</a></li>
                   </td>
               </tr>
               <tr>
                   <td>
   
-                      <li><a href="../cookies/cookies.html">İstifadəçi razılaşması</a></li>
+                      <li><a asp-controller="HomePage" asp-action="Cookies">İstifadəçi razılaşması</a></li>
                   </td>
               </tr>
               <tr>
                   <td>
   
-                      <li><a href="../privacy/privacy.html">Məxfilik</a></li>
+                      <li><a asp-controller="HomePage" asp-action="Privacy">Məxfilik</a></li>
                   </td>
               </tr>
               <tr >
                   <td>
   
-                      <li><a href="../services/services.html">Xidmətlər</a></li>
+                      <li><a asp-controller="HomePage" asp-action="Services">Xidmətlər</a></li>
                   </td>
               </tr>
-              <tr  >
+              <tr >
                   <td>
-  
-                      <li><a href="../aboutus/aboutus.html">Haqqımızda</a></li>
+                      <li><a asp-controller="HomePage" asp-action="AboutUs">Haqqımızda</a></li>
                   </td>
               </tr>
               <tr>
                   <td>
   
-                      <li><a href="../offers/offers.html">Paketlər</a></li>
+                      <li><a asp-controller="HomePage" asp-action="Offers">Paketlər</a></li>
                   </td>
               </tr>
   
