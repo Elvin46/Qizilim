@@ -38,5 +38,6 @@ namespace Qizilim.az.Models.Entities.Membreship
 
         public virtual ICollection<LikedProduct> LikedProducts { get; set; }
         public virtual ICollection<FollowUser> FollowUser { get; set; }
+        public virtual ICollection<Advertisement> Advertisements { get; set; }
     }
 }

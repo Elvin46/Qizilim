@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Qizilim.az.Models.DataContext;
 
 namespace Qizilim.az.Migrations
 {
     [DbContext(typeof(QizilimDbContext))]
-    partial class QizilimDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230402215721_AddLinkColumnToAdvertisementTable")]
+    partial class AddLinkColumnToAdvertisementTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -44,15 +46,7 @@ namespace Qizilim.az.Migrations
                     b.Property<string>("Link")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int?>("QizilimUserId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ShopId")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
-
-                    b.HasIndex("QizilimUserId");
 
                     b.ToTable("Advertisement");
                 });
@@ -695,13 +689,6 @@ namespace Qizilim.az.Migrations
                     b.ToTable("Shops");
                 });
 
-            modelBuilder.Entity("Qizilim.az.Models.Entities.Advertisement", b =>
-                {
-                    b.HasOne("Qizilim.az.Models.Entities.Membreship.QizilimUser", null)
-                        .WithMany("Advertisements")
-                        .HasForeignKey("QizilimUserId");
-                });
-
             modelBuilder.Entity("Qizilim.az.Models.Entities.Color+ProductColors", b =>
                 {
                     b.HasOne("Qizilim.az.Models.Entities.Color", "Color")
@@ -921,8 +908,6 @@ namespace Qizilim.az.Migrations
 
             modelBuilder.Entity("Qizilim.az.Models.Entities.Membreship.QizilimUser", b =>
                 {
-                    b.Navigation("Advertisements");
-
                     b.Navigation("FollowerShops");
 
                     b.Navigation("FollowUser");

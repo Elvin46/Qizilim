@@ -82,32 +82,36 @@
                             <a href="#">
                                 <img class="shop-list-li-img" src="../../Main/images/asist-imgs/phone.png" alt="">
                                 @ViewBag.User.shopNumber
-
-
                             </a>
                         </li>
-
-                        <li class="shop-page-contacts-li">
-                            <a href="#">
-                                <img class="shop-list-li-img" src="../../Main/images/asist-imgs/whatsapp-svgrepo-com.svg" alt="">
-                                @ViewBag.User.whatsappNumber
-
-                            </a>
-                        </li>
-
-                        <li class="shop-page-contacts-li">
-                            <a href="#">
-                                <img class="shop-list-li-img" src="../../Main/images/asist-imgs/instagram-svgrepo-com.svg" alt="">
-                                @ViewBag.User.instagramLink
-                            </a>
-                        </li>
-
-                        <li class="shop-page-contacts-li">
-                            <a href="#">
-                                <img class="shop-list-li-img" src="../../Main/images/asist-imgs/tiktok-icon-white-1-logo-svgrepo-com.svg" alt="">
-                                @ViewBag.User.tiktokLink
-                            </a>
-                        </li>
+                        @if (ViewBag.User.whatsappNumber != null)
+                        {
+                            <li class="shop-page-contacts-li">
+                                <a href="http://wa.me/@ViewBag.User.whatsappNumber">
+                                    <img class="shop-list-li-img" src="../../Main/images/asist-imgs/whatsapp-svgrepo-com.svg" alt="">
+                                    @ViewBag.User.whatsappNumber
+                                </a>
+                            </li>
+                        }
+                        @if (ViewBag.User.instagramLink != null)
+                        {
+                            <li class="shop-page-contacts-li">
+                                <a href="http://intagram.com/@ViewBag.User.instagramLink">
+                                    <img class="shop-list-li-img" src="../../Main/images/asist-imgs/instagram-svgrepo-com.svg" alt="">
+                                    @ViewBag.User.instagramLink
+                                </a>
+                            </li>
+                        }
+                        @if (ViewBag.User.tiktokLink != null)
+                        {
+                            <li class="shop-page-contacts-li">
+                                <a href="http://tiktok.com/@ViewBag.User.tiktokLink">
+                                    <img class="shop-list-li-img" src="../../Main/images/asist-imgs/tiktok-icon-white-1-logo-svgrepo-com.svg" alt="">
+                                    @ViewBag.User.tiktokLink
+                                </a>
+                            </li>
+                        }
+                        
                     </ul>
                 </div>
             </div>
@@ -265,7 +269,7 @@
         <div class="my-premium-products-shop">
             <div class="vip-products-text-area">
                 <div class="vip-child-div">
-                    <div class="vip-text">Izlediyim Magazalar<span class="count-myshops">(<a asp-controller="Store" asp-action="Stores">77</a>)</span></div>
+                    <div class="vip-text">Izlediyim Magazalar<span class="count-myshops">(<a asp-controller="Store" asp-action="Stores">@Model.Shops.Count()</a>)</span></div>
                     <!-- <div class="all-vip-btn"><button class="btn-shw-all-vip">Butun Vip Elanlar</button></div> -->
                 </div>
             </div>

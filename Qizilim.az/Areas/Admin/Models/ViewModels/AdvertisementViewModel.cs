@@ -9,5 +9,6 @@ namespace Qizilim.az.Areas.Admin.Models.ViewModels
     public class AdvertisementViewModel
     {
         public IFormFile file { get; set; }
+        public int ShopId { get; set; }
     }
 }

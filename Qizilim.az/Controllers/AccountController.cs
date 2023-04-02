@@ -73,10 +73,11 @@ namespace Qizilim.az.Controllers
                 return View(command);
             }
 
-            var user = await db.Users.Where(u => u.UserName == command.Username && u.EmailConfirmed == true).FirstOrDefaultAsync();
+            var user = await db.Users.Where(u => u.UserName == command.Username).FirstOrDefaultAsync();
             
             if (user.EmailConfirmed == false)
             {
+                ModelState.AddModelError("Username", "Email tesdiqlenmeyib!");
                 return View(command);
             }
             if (user.Status == null)
@@ -118,9 +119,9 @@ namespace Qizilim.az.Controllers
         }
         public async Task<IActionResult> myStore()
         {
-            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).FirstOrDefaultAsync();
+            ViewBag.User = await db.Users.Where(x => x.UserName == User.Identity.Name).Include(x => x.FollowerShops).FirstOrDefaultAsync();
             var userAbout = await userManager.FindByNameAsync(User.Identity.Name);
-            ViewBag.User = userAbout;
+            int count = userAbout.FollowerShops.Count();
             var colors = await db.Colors.Where(x => x.DeletedById == null).ToListAsync();
             var categories = await db.Kateqoriya.Where(x => x.DeletedById == null).ToListAsync();
             var eyars = await db.Eyars.Where(x => x.DeletedById == null).ToListAsync();

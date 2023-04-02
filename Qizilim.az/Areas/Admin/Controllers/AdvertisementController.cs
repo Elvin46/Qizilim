@@ -43,8 +43,9 @@ namespace Qizilim.az.Areas.Admin.Controllers
             return View(ads);
         }
 
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            ViewBag.Shops = await db.Users.Where(x=> x.shopName != null).ToListAsync();
             return View();
         }
 
@@ -74,6 +75,7 @@ namespace Qizilim.az.Areas.Admin.Controllers
                 var ads = new Advertisement
                 {
                     Image = name,
+                    ShopId = model.ShopId,
                     CreatedDate = DateTime.UtcNow.AddHours(4),
                     CreatedById = ctx.GetPrincipalId()
                 };

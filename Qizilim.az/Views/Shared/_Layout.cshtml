@@ -526,21 +526,21 @@
             console.log(searchedtext);
             location.href ="https://localhost:44345/homepage/Search?searchedText="+searchedtext;
         })
-        //$(document).ready(function () {
-        //    var searchedtext = document.querySelector(',sbx-custom__input')?.value;
-        //    }
-        //    $(document).on('click', `.sbx-custom__submit`, function () {
-        //        searchedtext = $(this).val();
-        //        console.log(searchedtext);
-        //        location.href ="https://localhost:44345/homepage/search?searchedtext="+searchedtext;
-        //        //$.ajax({
-        //        //    url: `/HomePage/search?searchedtext=` + searchedtext,
-        //        //    success: function (res) {
-        //        //        $(`#${controller.toLowerCase()}-list`).append(res);
-        //        //    }
-        //        //})
-        //    });
-        //})
+        $(document).ready(function () {
+            var searchedtext = document.querySelector(',sbx-custom__input')?.value;
+            }
+            $(document).on('click', `.sbx-custom__submit`, function () {
+                searchedtext = $(this).val();
+                console.log(searchedtext);
+                location.href ="https://localhost:44345/homepage/search?searchedtext="+searchedtext;
+                //$.ajax({
+                //    url: `/HomePage/search?searchedtext=` + searchedtext,
+                //    success: function (res) {
+                //        $(`#${controller.toLowerCase()}-list`).append(res);
+                //    }
+                //})
+            });
+        })
     </script>
 </body>
 

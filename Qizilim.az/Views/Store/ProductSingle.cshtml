@@ -149,6 +149,7 @@
                     }
                 </div>
             </div>
+            <button class="aaaaaa">salam</button>
             <div class="header-product-main">
                 <div class="header-product">
 
@@ -458,40 +459,40 @@
                 window.location.href = "/signin.html";
             }
     });
-    //$(".delete-item").click(function (ev) {
-    //            ev.preventDefault();
-    //            Swal.fire({
-    //                title: 'Are you sure?',
-    //                text: "You won't be able to revert this!",
-    //                icon: 'warning',
-    //                showCancelButton: true,
-    //                confirmButtonColor: '#3085d6',
-    //                cancelButtonColor: '#d33',
-    //                confirmButtonText: 'Yes, delete it!'
-    //            }).then((result) => {
-    //                if (result.isConfirmed) {
-    //                    let link = $(this).attr("href")
-    //                    fetch(link).then(response => response.json()).then(data => {
-    //                        if (data.status == 200) {
-    //                            Swal.fire(
-    //                                'Deleted!',
-    //                                'Your file has been deleted.',
-    //                                'success'
-    //                            )
-    //                            setTimeout(() =>
-    //                            { location.reload(true) }, 1000);
-    //                        }
-    //                        else {
-    //                            Swal.fire(
-    //                                'Error!',
-    //                                'Your file not Found.',
-    //                                'Failed'
-    //                            )
-    //                        }
-    //                    })
+    $(".delete-item").click(function (ev) {
+                ev.preventDefault();
+                Swal.fire({
+                    title: 'Mehsulu Silmek Isteyirsiniz?',
+                    text: "Silindikden sonra geri qaytara bilmeyeceksiniz",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Yes, delete it!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        let link = $(this).attr("href")
+                        fetch(link).then(response => response.json()).then(data => {
+                            if (data.status == 200) {
+                                Swal.fire(
+                                    'Silindi!',
+                                    'Mehsul Silinmisdir',
+                                    'success'
+                                )
+                                setTimeout(() =>
+                                { location.reload(true) }, 1000);
+                            }
+                            else {
+                                Swal.fire(
+                                    'Error!',
+                                    'Your file not Found.',
+                                    'Failed'
+                                )
+                            }
+                        })
                      
-    //                }
-    //            })
-    //})
+                    }
+                })
+    })
     </script>
 }
